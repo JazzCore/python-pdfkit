@@ -28,12 +28,10 @@ class PDFKit(object):
         #TODO outline tests
         self.source = Source(url_or_file)
         self.configuration = Configuration()
-
+        self.options = dict()
         self.stylesheets = []
 
         self.wkhtmltopdf = self.configuration.wkhtmltopdf
-
-        self.options = self.configuration.default_options
 
         if self.source.isHtml():
             self.options.update(self._find_options_in_meta(url_or_file))

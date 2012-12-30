@@ -7,15 +7,6 @@ class Configuration(object):
     def __init__(self):
         self.meta_tag_prefix = 'pdfkit-'
 
-        self.default_options = {
-            'page-size': 'Letter',
-            'margin-top': '0.75in',
-            'margin-right': '0.75in',
-            'margin-bottom': '0.75in',
-            'margin-left': '0.75in',
-            'encoding': "UTF-8"
-        }
-
         self.wkhtmltopdf = ''
 
         if not self.wkhtmltopdf:
