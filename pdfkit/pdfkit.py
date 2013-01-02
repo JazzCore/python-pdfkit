@@ -119,7 +119,7 @@ class PDFKit(object):
         return arg.lower()
 
     def _normalize_value(self, value):
-        if type(value) is bool:
+        if isinstance(value, bool):
             return None
         else:
             return str(value)
@@ -150,8 +150,7 @@ class PDFKit(object):
             return 1
 
     def _find_options_in_meta(self, content):
-        #TODO test this
-        if type(content) is file or content.__class__.__name__ == 'StreamReaderWriter':
+        if isinstance(content, file) or content.__class__.__name__ == 'StreamReaderWriter':
             content = content.read()
 
         found = {}
