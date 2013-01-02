@@ -88,13 +88,14 @@ class PDFKit(object):
             #TODO wip
 
         #capture output of wkhtmltopdf and pass it to stdout ( can be seen only when running from console )
-        while True:
-            out = result.stdout.read(1)
-            if out == '' and result.poll() is not None:
-                break
-            if out != '':
-                sys.stdout.write(out)
-                sys.stdout.flush()
+        if '--quiet' not in args:
+            while True:
+                out = result.stdout.read(1)
+                if out == '' and result.poll() is not None:
+                    break
+                if out != '':
+                    sys.stdout.write(out)
+                    sys.stdout.flush()
 
         if path:
             text = open(path).read()
