@@ -2,23 +2,25 @@
 
 
 class Source(object):
-    def __init__(self, url_or_file):
+    def __init__(self, url_or_file, type_):
         self.source = url_or_file
+        self.type = type_
 
     def isUrl(self):
-        return isinstance(self.source, str) and 'http' in self.source
+        return 'url' in self.type
 
-    def isFile(self):
+    def isFile(self, path=None):
         #dirty hack to check where file is opened with codecs module ( because it returns 'instance' type when encoding
         #is specified
-        return isinstance(self.source, file) or self.source.__class__.__name__ == 'StreamReaderWriter'
+        if path:
+            return isinstance(path, file) or path.__class__.__name__ == 'StreamReaderWriter'
+        else:
+            return 'file' in self.type
 
-    def isHtml(self):
-        return not (self.isUrl() or self.isFile())
+#    def isHtml(self):
+#        return not (self.isUrl() or self.isFile())
+    def isString(self):
+        return 'string' in self.type
 
     def to_s(self):
-        return self.source.name if self.isFile() else self.source
-
-    pass
-
-
+        return self.source

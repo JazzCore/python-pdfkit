@@ -9,7 +9,6 @@ from itertools import chain
 
 class PDFKit(object):
     class NoExecutableError(Exception):
-        #TODO docstring
         """Wkhtmltopdf executable not found"""
 
         def __str__(self):
@@ -18,7 +17,6 @@ class PDFKit(object):
                     "Please install wkhtmltopdf - https://github.com/jdpace/PDFKit/wiki/Installing-WKHTMLTOPDF")
 
     class ImproperSourceError(Exception):
-        #TODO docstring
         """Wrong source type for stylesheets"""
 
         def __init__(self, msg):
@@ -27,19 +25,20 @@ class PDFKit(object):
         def __str__(self):
             return self.msg
 
-    def __init__(self, url_or_file, options=None, toc=None, cover=None):
+    def __init__(self, url_or_file, type_, options=None, toc=None, cover=None):
         options = {} if options is None else options
         toc = {} if toc is None else toc
-        #TODO stylesheets; remove default options?;rework wkhtml path set and check
+        #TODO stylesheets for files with option; ;rework wkhtml path set and check
         #TODO outline tests
-        self.source = Source(url_or_file)
+        #TODO lists of input
+        self.source = Source(url_or_file, type_)
         self.configuration = Configuration()
         self.options = dict()
         self.stylesheets = []
 
         self.wkhtmltopdf = self.configuration.wkhtmltopdf
 
-        if self.source.isHtml():
+        if self.source.isString():
             self.options.update(self._find_options_in_meta(url_or_file))
 
         self.options.update(options)
@@ -68,7 +67,7 @@ class PDFKit(object):
 
 #args.append('--quiet')
 
-        if self.source.isHtml():
+        if self.source.isString():
             args.append('-')
         else:
             args.append(self.source.to_s())
@@ -89,7 +88,7 @@ class PDFKit(object):
         #invoke = ' '.join(args)
 
         result = subprocess.Popen(args, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        if self.source.isHtml():
+        if self.source.isString():
             result.communicate(input=self.source.to_s().encode('utf-8'))
             #TODO wip
 
@@ -141,7 +140,7 @@ class PDFKit(object):
         return "<style>%s</style>" % stylesheet.read()
 
     def _append_stylesheets(self):
-        if len(self.stylesheets) and self.source.isHtml():
+        if self.stylesheets and not self.source.isString():
             raise self.ImproperSourceError('Stylesheets may only be added to an HTML source')
 
         for x in self.stylesheets:

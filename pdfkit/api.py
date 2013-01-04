@@ -15,7 +15,7 @@ def from_url(url, output_path, options=None, toc=None, cover=None):
     :param cover: (optional) string with url/filename with a cover html page
     """
 
-    r = PDFKit(url, options=options, toc=toc,cover=cover)
+    r = PDFKit(url, 'url', options=options, toc=toc, cover=cover)
 
     r.to_file(output_path)
 
@@ -31,7 +31,9 @@ def from_file(input, output_path, options=None, toc=None, cover=None):
     :param cover: (optional) string with url/filename with a cover html page
 
     """
-    pass
+    r = PDFKit(input, 'file', options=options, toc=toc, cover=cover)
+
+    r.to_file(output_path)
 
 
 def from_string(input, output_path, options=None, toc=None, cover=None):
@@ -46,4 +48,6 @@ def from_string(input, output_path, options=None, toc=None, cover=None):
 
     """
 
-    pass
+    r = PDFKit(input, 'string', options=options, toc=toc, cover=cover)
+
+    r.to_file(output_path)
