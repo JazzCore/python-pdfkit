@@ -6,51 +6,50 @@ import unittest
 import pdfkit
 
 class TestPDFKit(unittest.TestCase):
-
     def setUp(self):
         pass
 
     def test_html_source_line(self):
-        r = pdfkit.PDFKit('<h1>Oh hai</h1>')
-        self.assertTrue(r.source.isHtml())
+        r = pdfkit.PDFKit('<h1>Oh hai</h1>', 'string')
+        self.assertTrue(r.source.isString())
 
     def test_url(self):
-        r = pdfkit.PDFKit('http://ya.ru')
+        r = pdfkit.PDFKit('http://ya.ru', 'url')
         self.assertTrue(r.source.isUrl())
 
     def test_options_parsing(self):
-        r = pdfkit.PDFKit('html', options={'page-size' : 'Letter'})
+        r = pdfkit.PDFKit('html', 'string', options={'page-size': 'Letter'})
         self.assertTrue(r.options['--page-size'])
 
     def test_command(self):
-        r = pdfkit.PDFKit('html',options={'page-size': 'Letter', 'toc-l1-font-size': 12})
+        r = pdfkit.PDFKit('html', 'string', options={'page-size': 'Letter', 'toc-l1-font-size': 12})
         command = r.command()
         self.assertEqual(command[0], r.wkhtmltopdf)
         self.assertEqual(command[command.index('--page-size') + 1], 'Letter')
         self.assertEqual(command[command.index('--toc-l1-font-size') + 1], '12')
 
-#Not needed, Popen automatically quotes args (?)
-#    def test_string_quote_encapsulation(self):
-#        r = pdfkit.PDFKit('html', options={'header-center': 'foo [page]'})
-#        command = r.command()
-#        self.assertEqual(command[command.index('--header-center') + 1], '"foo [page]"')
+    #Not needed, Popen automatically quotes args (?)
+    #    def test_string_quote_encapsulation(self):
+    #        r = pdfkit.PDFKit('html', options={'header-center': 'foo [page]'})
+    #        command = r.command()
+    #        self.assertEqual(command[command.index('--header-center') + 1], '"foo [page]"')
 
     def test_read_source_from_stdin(self):
-        r = pdfkit.PDFKit('html')
+        r = pdfkit.PDFKit('html', 'string')
         self.assertEqual(r.command()[-2:], ['-', '-'])
 
     def test_url_to_the_source(self):
-        r = pdfkit.PDFKit('http://ya.ru')
+        r = pdfkit.PDFKit('http://ya.ru', 'url')
         self.assertEqual(r.command()[-2:], ['http://ya.ru', '-'])
 
     def test_path_to_the_file(self):
-        path = 'pdfkit/pdfkit.py'
-        r = pdfkit.PDFKit(open(path))
+        path = 'testfiles/example.html'
+        r = pdfkit.PDFKit(path, 'file')
         self.assertEqual(r.command()[-2:], [path, '-'])
 
     def test_output_path(self):
         out = '/test/test2/out.pdf'
-        r = pdfkit.PDFKit('html')
+        r = pdfkit.PDFKit('html', 'string')
         self.assertEqual(r.command(out)[-1:], ['/test/test2/out.pdf'])
 
     def test_pdfkit_meta_tags(self):
@@ -63,7 +62,7 @@ class TestPDFKit(unittest.TestCase):
         </html>
         """
 
-        r = pdfkit.PDFKit(body)
+        r = pdfkit.PDFKit(body, 'string')
         command = r.command()
         self.assertEqual(command[command.index('--page-size') + 1], 'Legal')
         self.assertEqual(command[command.index('--orientation') + 1], 'Landscape')
@@ -79,7 +78,7 @@ class TestPDFKit(unittest.TestCase):
         </html>
         """
 
-        r = pdfkit.PDFKit(body)
+        r = pdfkit.PDFKit(body, 'string')
         command = r.command()
         self.assertEqual(command[command.index('--page-size') + 1], 'Legal')
         self.assertEqual(command[command.index('--orientation') + 1], 'Landscape')
@@ -95,7 +94,7 @@ class TestPDFKit(unittest.TestCase):
         </html>
         """
 
-        r = pdfkit.PDFKit(body)
+        r = pdfkit.PDFKit(body, 'string')
         command = r.command()
         self.assertEqual(command[command.index('--orientation') + 1], 'Landscape')
 
