@@ -164,5 +164,41 @@ class TestPDFKit(unittest.TestCase):
         r.to_pdf()
         self.assertIn('<style>%s</style><html>' % css.read(), r.source.to_s())
 
+    def test_stylesheet_adding_without_head_tag(self):
+        #TODO rewrite this part of pdfkit.py
+        r = pdfkit.PDFKit('<html><body>Hai!</body></html>', 'string')
+        css = open('testfiles/example.css')
+        r.stylesheets.append(css)
+        r.to_pdf()
+        self.assertIn('<style>%s</style><html>' % css.read(), r.source.to_s())
+
+    def test_stylesheet_throw_error_when_url(self):
+        r = pdfkit.PDFKit('http://ya.ru', 'url')
+        css = open('testfiles/example.css')
+        r.stylesheets.append(css)
+        with self.assertRaises(r.ImproperSourceError):
+            r.to_pdf()
+
+    def test_stylesheet_adding_to_file_with_option(self):
+        css = 'testfiles/example.css'
+        r = pdfkit.PDFKit('testfiles/example.html', 'file', css=css)
+        self.assertEqual(r.css, css)
+        self.assertIn('font-size', r._prepend_css(css))
+
+    def test_raise_error_with_wrong_css_path(self):
+        css = 'testfiles/wrongpath.css'
+        r = pdfkit.PDFKit('testfiles/example.html', 'file', css=css)
+        with self.assertRaises(IOError):
+            r.to_pdf()
+
+    def test_raise_error_if_css_added_to_url_or_string(self):
+        css = 'testfiles/example.css'
+        r = pdfkit.PDFKit('test', 'string', css=css)
+        r2 = pdfkit.PDFKit('http://google.com', 'url', css=css)
+        with self.assertRaises(r.ImproperSourceError):
+            r._prepend_css(css)
+        with self.assertRaises(r.ImproperSourceError):
+            r2._prepend_css(css)
+
 if __name__ == "__main__":
     unittest.main()

@@ -20,7 +20,7 @@ def from_url(url, output_path, options=None, toc=None, cover=None):
     r.to_file(output_path)
 
 
-def from_file(input, output_path, options=None, toc=None, cover=None):
+def from_file(input, output_path, options=None, toc=None, cover=None, css=None):
     """
     Convert HTML file or files to PDF document
 
@@ -29,9 +29,10 @@ def from_file(input, output_path, options=None, toc=None, cover=None):
     :param options: (optional) dict with wkhtmltopdf options, without '--'
     :param toc: (optional) dict with toc-specific wkhtmltopdf options, without '--'
     :param cover: (optional) string with url/filename with a cover html page
-
+    :param css: (optional) string with path to css file which will be added to a input file
     """
-    r = PDFKit(input, 'file', options=options, toc=toc, cover=cover)
+
+    r = PDFKit(input, 'file', options=options, toc=toc, cover=cover, css=css)
 
     r.to_file(output_path)
 
@@ -45,7 +46,6 @@ def from_string(input, output_path, options=None, toc=None, cover=None):
     :param options: (optional) dict with wkhtmltopdf options, without '--'
     :param toc: (optional) dict with toc-specific wkhtmltopdf options, without '--'
     :param cover: (optional) string with url/filename with a cover html page
-
     """
 
     r = PDFKit(input, 'string', options=options, toc=toc, cover=cover)

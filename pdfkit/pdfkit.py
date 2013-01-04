@@ -25,10 +25,10 @@ class PDFKit(object):
         def __str__(self):
             return self.msg
 
-    def __init__(self, url_or_file, type_, options=None, toc=None, cover=None):
+    def __init__(self, url_or_file, type_, options=None, toc=None, cover=None, css=None):
         options = {} if options is None else options
         toc = {} if toc is None else toc
-        #TODO stylesheets for files with option; ;rework wkhtml path set and check
+        #TODO rework wkhtml path set and check
         #TODO outline tests
         #TODO lists of input
         self.source = Source(url_or_file, type_)
@@ -45,6 +45,7 @@ class PDFKit(object):
         self.options = self._normalize_options(self.options)
         self.toc = self._normalize_options(toc)
         self.cover = cover
+        self.css = css
 
         try:
             with open(self.wkhtmltopdf) as f:
@@ -67,7 +68,7 @@ class PDFKit(object):
 
 #args.append('--quiet')
 
-        if self.source.isString():
+        if self.source.isString() or self.css:
             args.append('-')
         else:
             args.append(self.source.to_s())
@@ -88,7 +89,10 @@ class PDFKit(object):
         #invoke = ' '.join(args)
 
         result = subprocess.Popen(args, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        if self.source.isString():
+        if self.css:
+            data = self._prepend_css(self.css)
+            result.communicate(input=data.encode('utf-8'))
+        elif self.source.isString():
             result.communicate(input=self.source.to_s().encode('utf-8'))
             #TODO wip
 
@@ -137,7 +141,23 @@ class PDFKit(object):
             #                return '"%s"' % value
 
     def _style_tag_for(self, stylesheet):
-        return "<style>%s</style>" % stylesheet.read()
+        if self.source.isFile(stylesheet):
+            return "<style>%s</style>" % stylesheet.read()
+        else:
+            return "<style>%s</style>" % stylesheet
+
+    def _prepend_css(self, path):
+        if not self.source.isFile():
+                raise self.ImproperSourceError('CSS file can be prepended only to a file or to an raw HTML source')
+
+        with open(path) as f:
+            data = f.read()
+
+        with open(self.source.to_s()) as f:
+            out = f.read()
+
+        ret = out.replace('</head>', self._style_tag_for(data) + '</head>')
+        return ret
 
     def _append_stylesheets(self):
         if self.stylesheets and not self.source.isString():
