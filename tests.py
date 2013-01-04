@@ -99,10 +99,70 @@ class TestPDFKit(unittest.TestCase):
         self.assertEqual(command[command.index('--orientation') + 1], 'Landscape')
 
     def test_pdf_generation(self):
-        r = pdfkit.PDFKit('html', options={'page-size': 'Letter'})
+        r = pdfkit.PDFKit('html', 'string', options={'page-size': 'Letter'})
         pdf = r.to_pdf('ouy.pdf')
         self.assertEqual(pdf[:4], '%PDF')
         os.remove('ouy.pdf')
+
+    def test_toc_handling_without_options(self):
+        r = pdfkit.PDFKit('hmtl', 'string', toc={'xsl-style-sheet': 'test.xsl'})
+        self.assertEqual(r.command()[1], 'toc')
+        self.assertEqual(r.command()[2], '--xsl-style-sheet')
+
+    def test_toc_with_options(self):
+        options = {
+            'page-size': 'Letter',
+            'margin-top': '0.75in',
+            'margin-right': '0.75in',
+            'margin-bottom': '0.75in',
+            'margin-left': '0.75in',
+            'encoding': "UTF-8"
+        }
+        r = pdfkit.PDFKit('html', 'string', options=options, toc={'xsl-style-sheet': 'test.xsl'})
+
+        self.assertEqual(r.command()[1 + len(options) * 2], 'toc')
+        self.assertEqual(r.command()[1 + len(options) * 2 + 1], '--xsl-style-sheet')
+
+    def test_cover_without_options(self):
+        r = pdfkit.PDFKit('html', 'string', cover='test.html')
+
+        self.assertEqual(r.command()[1], 'cover')
+        self.assertEqual(r.command()[2], 'test.html')
+
+    def test_cover_with_options(self):
+        options = {
+            'page-size': 'Letter',
+            'margin-top': '0.75in',
+            'margin-right': '0.75in',
+            'margin-bottom': '0.75in',
+            'margin-left': '0.75in',
+            'encoding': "UTF-8"
+        }
+        r = pdfkit.PDFKit('html', 'string', options=options, cover='test.html')
+
+        self.assertEqual(r.command()[1 + len(options) * 2], 'cover')
+        self.assertEqual(r.command()[1 + len(options) * 2 + 1], 'test.html')
+
+    def test_cover_and_toc(self):
+        options = {
+            'page-size': 'Letter',
+            'margin-top': '0.75in',
+            'margin-right': '0.75in',
+            'margin-bottom': '0.75in',
+            'margin-left': '0.75in',
+            'encoding': "UTF-8"
+        }
+        r = pdfkit.PDFKit('html', 'string', options=options, toc={'xsl-style-sheet': 'test.xsl'}, cover='test.html')
+        command = r.command()
+        self.assertEqual(command[-7:], ['toc', '--xsl-style-sheet', 'test.xsl', 'cover', 'test.html', '-', '-'])
+
+    def test_stylesheet_adding_to_the_head(self):
+        #TODO rewrite this part of pdfkit.py
+        r = pdfkit.PDFKit('<html><head></head><body>Hai!</body></html>', 'string')
+        css = open('testfiles/example.css')
+        r.stylesheets.append(css)
+        r.to_pdf()
+        self.assertIn('<style>%s</style><html>' % css.read(), r.source.to_s())
 
 if __name__ == "__main__":
     unittest.main()
