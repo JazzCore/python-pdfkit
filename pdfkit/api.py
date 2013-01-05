@@ -37,7 +37,7 @@ def from_file(input, output_path, options=None, toc=None, cover=None, css=None):
     r.to_file(output_path)
 
 
-def from_string(input, output_path, options=None, toc=None, cover=None):
+def from_string(input, output_path, options=None, toc=None, cover=None, css=None):
     """
     Convert given string or strings to PDF document
 
@@ -48,6 +48,6 @@ def from_string(input, output_path, options=None, toc=None, cover=None):
     :param cover: (optional) string with url/filename with a cover html page
     """
 
-    r = PDFKit(input, 'string', options=options, toc=toc, cover=cover)
+    r = PDFKit(input, 'string', options=options, toc=toc, cover=cover, css=css)
 
     r.to_file(output_path)

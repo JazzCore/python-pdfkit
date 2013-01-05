@@ -53,6 +53,9 @@ class PDFKit(object):
             raise self.NoExecutableError()
 
     def command(self, path=None):
+        if self.css:
+            self._prepend_css(self.css)
+
         args = [self.wkhtmltopdf]
 
         args += list(chain.from_iterable(self.options.items()))
@@ -65,9 +68,7 @@ class PDFKit(object):
             args.append('cover')
             args.append(self.cover)
 
-#args.append('--quiet')
-
-        if self.source.isString() or self.css:
+        if self.source.isString():
             args.append('-')
         else:
             if isinstance(self.source.source, str):
@@ -85,18 +86,14 @@ class PDFKit(object):
         return args
 
     def to_pdf(self, path=None):
-        self._append_stylesheets()
-
         args = self.command(path)
         #invoke = ' '.join(args)
 
         result = subprocess.Popen(args, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        if self.css:
-            data = self._prepend_css(self.css)
-            result.communicate(input=data.encode('utf-8'))
-        elif self.source.isString():
+        if self.source.isString():
             result.communicate(input=self.source.to_s().encode('utf-8'))
-            #TODO wip
+        elif self.source.isFile() and self.css:
+            result.communicate(input=self.source.to_s().encode('utf-8'))
 
         #capture output of wkhtmltopdf and pass it to stdout ( can be seen only when running from console )
         if '--quiet' not in args:
@@ -131,33 +128,26 @@ class PDFKit(object):
         return arg.lower()
 
     def _style_tag_for(self, stylesheet):
-        if self.source.isFile(stylesheet):
-            return "<style>%s</style>" % stylesheet.read()
-        else:
             return "<style>%s</style>" % stylesheet
 
     def _prepend_css(self, path):
-        if not self.source.isFile():
-                raise self.ImproperSourceError('CSS file can be prepended only to a file or to an raw HTML source')
+        if self.source.isUrl():
+            #TODO change error msg
+            raise self.ImproperSourceError('No URLs')
 
         with open(path) as f:
-            data = f.read()
+            css_data = f.read()
 
-        with open(self.source.to_s()) as f:
-            out = f.read()
+        if self.source.isFile():
+            with open(self.source.to_s()) as f:
+                inp = f.read()
+            self.source = Source(inp.replace('</head>', self._style_tag_for(css_data) + '</head>'), 'string')
 
-        ret = out.replace('</head>', self._style_tag_for(data) + '</head>')
-        return ret
-
-    def _append_stylesheets(self):
-        if self.stylesheets and not self.source.isString():
-            raise self.ImproperSourceError('Stylesheets may only be added to an HTML source')
-
-        for x in self.stylesheets:
-            if '</head>' in x:
-                self.source = Source(self.source.to_s.replace('</head>', self._style_tag_for(x) + '</head>'))
+        elif self.source.isString():
+            if '</head>' in self.source.to_s():
+                self.source.source = self.source.to_s().replace('</head>', self._style_tag_for(css_data) + '</head>')
             else:
-                self.source.source = self._style_tag_for(x) + self.source.source
+                self.source.source = self._style_tag_for(css_data) + self.source.to_s()
 
     def _find_options_in_meta(self, content):
         if isinstance(content, file) or content.__class__.__name__ == 'StreamReaderWriter':
