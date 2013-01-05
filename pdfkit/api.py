@@ -41,7 +41,7 @@ def from_string(input, output_path, options=None, toc=None, cover=None):
     """
     Convert given string or strings to PDF document
 
-    :param input: string or list of strings. Could be a raw text or a html file
+    :param input: string with a desired text. Could be a raw text or a html file
     :param output_path: path to output PDF file
     :param options: (optional) dict with wkhtmltopdf options, without '--'
     :param toc: (optional) dict with toc-specific wkhtmltopdf options, without '--'

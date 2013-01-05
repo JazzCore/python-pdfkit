@@ -59,7 +59,6 @@ class TestPDFKit(unittest.TestCase):
             <meta name="pdfkit-page-size" content="Legal"/>
             <meta name="pdfkit-orientation" content="Landscape"/>
           </head>
-        </html>
         """
 
         r = pdfkit.PDFKit(body, 'string')
@@ -199,6 +198,16 @@ class TestPDFKit(unittest.TestCase):
             r._prepend_css(css)
         with self.assertRaises(r.ImproperSourceError):
             r2._prepend_css(css)
+
+    def test_lists_of_input_args(self):
+        urls = ['http://ya.ru', 'http://google.com']
+        paths = ['testfiles/example.html', 'testfiles/examples.html']
+        r = pdfkit.PDFKit(urls, 'url')
+        r2 = pdfkit.PDFKit(paths, 'file')
+        cmd = r.command()
+        cmd2 = r2.command()
+        self.assertEqual(cmd[-3:], ['http://ya.ru', 'http://google.com', '-'])
+        self.assertEqual(cmd2[-3:], ['testfiles/example.html', 'testfiles/examples.html', '-'])
 
 if __name__ == "__main__":
     unittest.main()

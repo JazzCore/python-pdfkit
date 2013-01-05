@@ -30,7 +30,6 @@ class PDFKit(object):
         toc = {} if toc is None else toc
         #TODO rework wkhtml path set and check
         #TODO outline tests
-        #TODO lists of input
         self.source = Source(url_or_file, type_)
         self.configuration = Configuration()
         self.options = dict()
@@ -71,7 +70,10 @@ class PDFKit(object):
         if self.source.isString() or self.css:
             args.append('-')
         else:
-            args.append(self.source.to_s())
+            if isinstance(self.source, str):
+                args.append(self.source.to_s())
+            else:
+                args += self.source.source
 
         if path:
             args.append(path)
