@@ -56,7 +56,7 @@ class PDFKit(object):
         args = [self.wkhtmltopdf]
 
         args += list(chain.from_iterable(self.options.items()))
-        args = filter(self._isTrue, args)
+        args = filter(None, args)
 
         if self.toc:
             args.append('toc')
@@ -70,7 +70,7 @@ class PDFKit(object):
         if self.source.isString() or self.css:
             args.append('-')
         else:
-            if isinstance(self.source, str):
+            if isinstance(self.source.source, str):
                 args.append(self.source.to_s())
             else:
                 args += self.source.source
@@ -170,12 +170,6 @@ class PDFKit(object):
                 self.source = Source(self.source.to_s.replace('</head>', self._style_tag_for(x) + '</head>'))
             else:
                 self.source.source = self._style_tag_for(x) + self.source.source
-
-    def _isTrue(self, x):
-        if x is None:
-            return 0
-        else:
-            return 1
 
     def _find_options_in_meta(self, content):
         if isinstance(content, file) or content.__class__.__name__ == 'StreamReaderWriter':
