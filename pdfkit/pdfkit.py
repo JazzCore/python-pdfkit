@@ -123,24 +123,12 @@ class PDFKit(object):
 
         for key, value in options.iteritems():
             normalized_key = '--%s' % self._normalize_arg(key)
-            normalized_options[normalized_key] = self._normalize_value(value)
+            normalized_options[normalized_key] = value
 
         return normalized_options
 
     def _normalize_arg(self, arg):
         return arg.lower()
-
-    def _normalize_value(self, value):
-        if isinstance(value, bool):
-            return None
-        else:
-            return str(value)
-            #TODO Guess this is not needed - Popen automatically quotes args
-            #            value = str(value)
-            #            if value.split(' ') == [value]:
-            #                return value
-            #            else:
-            #                return '"%s"' % value
 
     def _style_tag_for(self, stylesheet):
         if self.source.isFile(stylesheet):
