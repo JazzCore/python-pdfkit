@@ -134,12 +134,11 @@ class PDFKit(object):
         return arg.lower()
 
     def _style_tag_for(self, stylesheet):
-            return "<style>%s</style>" % stylesheet
+        return "<style>%s</style>" % stylesheet
 
     def _prepend_css(self, path):
-        if self.source.isUrl():
-            #TODO change error msg
-            raise self.ImproperSourceError('No URLs')
+        if self.source.isUrl() or isinstance(self.source.source, list):
+            raise self.ImproperSourceError('CSS file can be added only to a single file or string')
 
         with open(path) as f:
             css_data = f.read()

@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
+import os
 
 
 class Source(object):
     def __init__(self, url_or_file, type_):
         self.source = url_or_file
         self.type = type_
+
+        if self.type is 'file':
+            self.checkFiles()
 
     def isUrl(self):
         return 'url' in self.type
@@ -17,8 +21,15 @@ class Source(object):
         else:
             return 'file' in self.type
 
-#    def isHtml(self):
-#        return not (self.isUrl() or self.isFile())
+    def checkFiles(self):
+        if isinstance(self.source, list):
+            for path in self.source:
+                if not os.path.exists(path):
+                    raise IOError('No such file: %s' % path)
+        else:
+            if not os.path.exists(self.source):
+                raise IOError('No such file: %s' % self.source)
+
     def isString(self):
         return 'string' in self.type
 
