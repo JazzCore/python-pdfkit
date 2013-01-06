@@ -106,11 +106,17 @@ class PDFKit(object):
                     sys.stdout.flush()
 
         if path:
-            text = open(path).read()
-
-            if text == '':
-                raise 'command failed: %s' % ' '.join(args)
-            return text
+            try:
+                with open(path) as f:
+                    # read 4 bytes to get PDF signature '%PDF'
+                    text = f.read(4)
+                    if text == '':
+                        raise IOError('Command failed: %s\n'
+                                      'Check whhtmltopdf output without \'quiet\' option' % ' '.join(args))
+                    return text
+            except IOError:
+                raise IOError('Command failed: %s\n'
+                              'Check whhtmltopdf output without \'quiet\' option' % ' '.join(args))
 
     def to_file(self, path):
         self.to_pdf(path)
