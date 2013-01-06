@@ -126,7 +126,7 @@ class PDFKit(object):
 
         for key, value in options.iteritems():
             normalized_key = '--%s' % self._normalize_arg(key)
-            normalized_options[normalized_key] = value
+            normalized_options[normalized_key] = str(value) if value else value
 
         return normalized_options
 

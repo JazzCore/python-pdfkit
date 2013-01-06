@@ -165,6 +165,17 @@ class TestPDFKitCommandGeneration(unittest.TestCase):
         command = r.command()
         self.assertEqual(command[-7:], ['toc', '--xsl-style-sheet', 'test.xsl', 'cover', 'test.html', '-', '-'])
 
+    def test_filter_empty_and_none_values_in_opts(self):
+        options = {
+            'outline': '',
+            'footer-line': None,
+            'quiet': False
+        }
+
+        r = pdfkit.PDFKit('html', 'string', options=options)
+        cmd = r.command()
+        self.assertEqual(cmd[1:], ['--outline', '--quiet', '--footer-line', '-', '-'])
+
 
 class TestPDFKitGeneration(unittest.TestCase):
     """Test to_pdf() method"""
