@@ -42,13 +42,13 @@ class TestPDFKitCommandGeneration(unittest.TestCase):
 
     def test_lists_of_input_args(self):
         urls = ['http://ya.ru', 'http://google.com']
-        paths = ['fixtures/example.html', 'fixtures/examples.html']
+        paths = ['fixtures/example.html', 'fixtures/example.html']
         r = pdfkit.PDFKit(urls, 'url')
         r2 = pdfkit.PDFKit(paths, 'file')
         cmd = r.command()
         cmd2 = r2.command()
         self.assertEqual(cmd[-3:], ['http://ya.ru', 'http://google.com', '-'])
-        self.assertEqual(cmd2[-3:], ['fixtures/example.html', 'fixtures/examples.html', '-'])
+        self.assertEqual(cmd2[-3:], ['fixtures/example.html', 'fixtures/example.html', '-'])
 
     def test_read_source_from_stdin(self):
         r = pdfkit.PDFKit('html', 'string')
@@ -180,6 +180,18 @@ class TestPDFKitGeneration(unittest.TestCase):
         r = pdfkit.PDFKit('html', 'string', options={'page-size': 'Letter'})
         pdf = r.to_pdf('out.pdf')
         self.assertEqual(pdf[:4], '%PDF')
+
+    def test_raise_error_with_invalid_url(self):
+        r = pdfkit.PDFKit('wrongurl', 'url')
+        with self.assertRaises(IOError):
+            r.to_pdf('out.pdf')
+
+    def test_raise_error_with_invalid_file_path(self):
+        paths = ['frongpath.html', 'wrongpath2.html']
+        with self.assertRaises(IOError):
+            pdfkit.PDFKit('wrongpath.html', 'file')
+        with self.assertRaises(IOError):
+            pdfkit.PDFKit(paths, 'file')
 
     def test_stylesheet_adding_to_the_head(self):
         #TODO rewrite this part of pdfkit.py
