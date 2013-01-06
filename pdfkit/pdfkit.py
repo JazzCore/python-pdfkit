@@ -28,7 +28,6 @@ class PDFKit(object):
     def __init__(self, url_or_file, type_, options=None, toc=None, cover=None, css=None):
         options = {} if options is None else options
         toc = {} if toc is None else toc
-        #TODO rework wkhtml path set and check
         #TODO outline tests
         self.source = Source(url_or_file, type_)
         self.configuration = Configuration()
@@ -45,12 +44,6 @@ class PDFKit(object):
         self.toc = self._normalize_options(toc)
         self.cover = cover
         self.css = css
-
-        try:
-            with open(self.wkhtmltopdf) as f:
-                pass
-        except IOError:
-            raise self.NoExecutableError()
 
     def command(self, path=None):
         if self.css:
@@ -87,7 +80,6 @@ class PDFKit(object):
 
     def to_pdf(self, path=None):
         args = self.command(path)
-        #invoke = ' '.join(args)
 
         result = subprocess.Popen(args, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         if self.source.isString():

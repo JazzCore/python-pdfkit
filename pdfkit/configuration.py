@@ -16,3 +16,9 @@ class Configuration(object):
             else:
                 self.wkhtmltopdf = subprocess.Popen(
                     ['which', 'wkhtmltopdf'], shell=True, stdout=subprocess.PIPE).communicate()[0].strip()
+
+        try:
+            with open(self.wkhtmltopdf) as f:
+                pass
+        except IOError:
+            raise IOError('No wkhtmltopdf executable found: %s' % self.wkhtmltopdf)
