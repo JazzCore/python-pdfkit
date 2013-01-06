@@ -8,14 +8,6 @@ from itertools import chain
 
 
 class PDFKit(object):
-    class NoExecutableError(Exception):
-        """Wkhtmltopdf executable not found"""
-
-        def __str__(self):
-            #TODO insert actual path
-            return ("No wkhtmltopdf executable found.\n"
-                    "Please install wkhtmltopdf - https://github.com/jdpace/PDFKit/wiki/Installing-WKHTMLTOPDF")
-
     class ImproperSourceError(Exception):
         """Wrong source type for stylesheets"""
 

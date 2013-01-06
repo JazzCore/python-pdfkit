@@ -21,4 +21,6 @@ class Configuration(object):
             with open(self.wkhtmltopdf) as f:
                 pass
         except IOError:
-            raise IOError('No wkhtmltopdf executable found: %s' % self.wkhtmltopdf)
+            raise IOError('No wkhtmltopdf executable found: %s\n'
+                          'Please install wkhtmltopdf - '
+                          'https://github.com/jdpace/PDFKit/wiki/Installing-WKHTMLTOPDF' % self.wkhtmltopdf)
