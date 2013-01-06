@@ -28,7 +28,6 @@ class PDFKit(object):
     def __init__(self, url_or_file, type_, options=None, toc=None, cover=None, css=None):
         options = {} if options is None else options
         toc = {} if toc is None else toc
-        #TODO outline tests
         self.source = Source(url_or_file, type_)
         self.configuration = Configuration()
         self.options = dict()

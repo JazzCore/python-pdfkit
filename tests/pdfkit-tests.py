@@ -38,7 +38,7 @@ class TestPDFKitCommandGeneration(unittest.TestCase):
         command = r.command()
         self.assertEqual(command[0], r.wkhtmltopdf)
         self.assertEqual(command[command.index('--page-size') + 1], 'Letter')
-        self.assertEqual(command[command.index('--toc-l1-font-size') + 1], 12)
+        self.assertEqual(command[command.index('--toc-l1-font-size') + 1], '12')
 
     def test_lists_of_input_args(self):
         urls = ['http://ya.ru', 'http://google.com']
@@ -164,6 +164,16 @@ class TestPDFKitCommandGeneration(unittest.TestCase):
         r = pdfkit.PDFKit('html', 'string', options=options, toc={'xsl-style-sheet': 'test.xsl'}, cover='test.html')
         command = r.command()
         self.assertEqual(command[-7:], ['toc', '--xsl-style-sheet', 'test.xsl', 'cover', 'test.html', '-', '-'])
+
+    def test_outline_options(self):
+        options = {
+            'outline': None,
+            'outline-depth': 1
+        }
+
+        r = pdfkit.PDFKit('ya.ru', 'url', options=options)
+        cmd = r.command()
+        self.assertEqual(cmd[1:], ['--outline', '--outline-depth', '1', 'ya.ru', '-'])
 
     def test_filter_empty_and_none_values_in_opts(self):
         options = {
