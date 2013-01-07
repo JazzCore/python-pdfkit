@@ -23,4 +23,4 @@ class Configuration(object):
         except IOError:
             raise IOError('No wkhtmltopdf executable found: %s\n'
                           'Please install wkhtmltopdf - '
-                          'https://github.com/jdpace/PDFKit/wiki/Installing-WKHTMLTOPDF' % self.wkhtmltopdf)
+                          'https://github.com/JazzCore/python-pdfkit/wiki/Installing-wkhtmltopdf' % self.wkhtmltopdf)
