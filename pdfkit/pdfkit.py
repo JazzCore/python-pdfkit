@@ -81,9 +81,9 @@ class PDFKit(object):
         #capture output of wkhtmltopdf and pass it to stdout ( can be seen only when running from console )
         if '--quiet' not in args:
             while True:
-                out = result.stdout.read(1)
-                if out == '' and result.poll() is not None:
+                if result.poll() is not None:
                     break
+                out = result.stdout.read(1)
                 if out != '':
                     sys.stdout.write(out)
                     sys.stdout.flush()
