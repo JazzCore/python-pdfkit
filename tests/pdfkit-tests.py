@@ -29,6 +29,10 @@ class TestPDFKitInitialization(unittest.TestCase):
         r = pdfkit.PDFKit('html', 'string', options={'page-size': 'Letter'})
         self.assertTrue(r.options['--page-size'])
 
+    def test_options_parsing_with_dashes(self):
+        r = pdfkit.PDFKit('html', 'string', options={'--page-size': 'Letter'})
+        self.assertTrue(r.options['--page-size'])
+
 
 class TestPDFKitCommandGeneration(unittest.TestCase):
     """Test command() method"""
