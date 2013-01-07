@@ -72,7 +72,7 @@ class PDFKit(object):
     def to_pdf(self, path=None):
         args = self.command(path)
 
-        result = subprocess.Popen(args, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        result = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         if self.source.isString():
             result.communicate(input=self.source.to_s().encode('utf-8'))
         elif self.source.isFile() and self.css:
