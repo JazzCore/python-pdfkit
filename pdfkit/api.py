@@ -10,8 +10,8 @@ def from_url(url, output_path, options=None, toc=None, cover=None):
 
     :param url: URL or list of URLs to be saved
     :param output_path: path to output PDF file
-    :param options: (optional) dict with wkhtmltopdf global and page options, without '--'
-    :param toc: (optional) dict with toc-specific wkhtmltopdf options, without '--'
+    :param options: (optional) dict with wkhtmltopdf global and page options, with or w/o '--'
+    :param toc: (optional) dict with toc-specific wkhtmltopdf options, with or w/o '--'
     :param cover: (optional) string with url/filename with a cover html page
     """
 
@@ -26,8 +26,8 @@ def from_file(input, output_path, options=None, toc=None, cover=None, css=None):
 
     :param input: path to HTML file or list with paths
     :param output_path: path to output PDF file
-    :param options: (optional) dict with wkhtmltopdf options, without '--'
-    :param toc: (optional) dict with toc-specific wkhtmltopdf options, without '--'
+    :param options: (optional) dict with wkhtmltopdf options, with or w/o '--'
+    :param toc: (optional) dict with toc-specific wkhtmltopdf options, with or w/o '--'
     :param cover: (optional) string with url/filename with a cover html page
     :param css: (optional) string with path to css file which will be added to a single input file
     """
@@ -43,8 +43,8 @@ def from_string(input, output_path, options=None, toc=None, cover=None, css=None
 
     :param input: string with a desired text. Could be a raw text or a html file
     :param output_path: path to output PDF file
-    :param options: (optional) dict with wkhtmltopdf options, without '--'
-    :param toc: (optional) dict with toc-specific wkhtmltopdf options, without '--'
+    :param options: (optional) dict with wkhtmltopdf options, with or w/o '--'
+    :param toc: (optional) dict with toc-specific wkhtmltopdf options, with or w/o '--'
     :param cover: (optional) string with url/filename with a cover html page
     :param css: (optional) string with path to css file which will be added to a input string
 
