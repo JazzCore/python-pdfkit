@@ -12,7 +12,7 @@ Installation
 
 .. code-block:: bash
 
-	$ pip install python-pdfkit
+	$ pip install pdfkit
 
 2. Install wkhtmltopdf:
 

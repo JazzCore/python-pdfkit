@@ -29,7 +29,7 @@ setup(
         'Topic :: Text Processing :: General',
         'Topic :: Text Processing :: Markup',
         'Topic :: Text Processing :: Markup :: HTML',
-        'Topic :: Text Processing :: Markup :: XMl',
+        'Topic :: Text Processing :: Markup :: XML',
         'Topic :: Utilities'
         ]
 )
