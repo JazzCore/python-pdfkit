@@ -37,6 +37,13 @@ For simple tasks:
 	pdfkit.from_file('test.html', 'out.pdf')
 	pdfkit.from_string('Hello!', 'out.pdf')
 
+You can pass a list with multiple URLs or files:
+
+.. code-block:: python
+
+	pdfkit.from_url(['google.com', 'yandex.ru', 'engadget.com'], 'out.pdf')
+	pdfkit.from_file(['file1.html', 'file2.html'], 'out.pdf')
+
 You can specify all wkhtmltopdf `options <http://madalgo.au.dk/~jakobt/wkhtmltoxdoc/wkhtmltopdf_0.10.0_rc2-doc.html>`_. You can drop '--' in option name. If option without value, use *None, False* or *''* for dict value:
 
 .. code-block:: python
@@ -97,4 +104,4 @@ Troubleshooting
 
 - ``IOError: 'No wkhtmltopdf executable found'``:
 
-  Make sure that you have wkhtmltopdf in your PATH. *where wkthmltopdf* in Windows or *which wkhhtmltopdf* on Linux should return actual path to binary.
+  Make sure that you have wkhtmltopdf in your PATH. *where wkhtmltopdf* in Windows or *which wkhtmltopdf* on Linux should return actual path to binary.
