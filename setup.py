@@ -10,7 +10,7 @@ def long_description():
         rst = f.read()
     code_block = '(:\n\n)?\.\. code-block::.*'
     rst = re.sub(code_block, '::', rst)
-    return rst
+    return rst + '\n\n' + open('HISTORY.rst').read()
 
 setup(
     name='pdfkit',
