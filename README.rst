@@ -3,7 +3,7 @@ Python-PDFKit: HTML to PDF wrapper
 
 Python wrapper for wkhtmltopdf utility to convert HTML to PDF using Webkit.
 
-This is adapted version of `ruby python-pdfkit <https://github.com/pdfkit/pdfkit>`_ library, so big thanks to them!
+This is adapted version of `ruby PDFKit <https://github.com/pdfkit/pdfkit>`_ library, so big thanks to them!
 
 Installation
 ------------
