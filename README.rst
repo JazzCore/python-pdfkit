@@ -61,7 +61,7 @@ You can specify all wkhtmltopdf `options <http://madalgo.au.dk/~jakobt/wkhtmltox
 	pdfkit.from_url('http://google.com', 'out.pdf', options=options)
 
 
-Due to wkhmtltopdf command syntax, **TOC** and **Cover** options must be specified separately:
+Due to wkhtmltopdf command syntax, **TOC** and **Cover** options must be specified separately:
 
 .. code-block:: python
 

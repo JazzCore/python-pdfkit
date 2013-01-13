@@ -1,0 +1,8 @@
+language: python
+python:
+  - 2.6
+  - 2.7
+  - 3.2 
+
+before_script: "sudo apt-get install -y wkhtmltopdf"
+script: python setup.py test
