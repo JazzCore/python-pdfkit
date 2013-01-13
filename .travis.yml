@@ -3,6 +3,7 @@ python:
   - 2.7
   - 3.2 
   - 3.3
-
 before_script: "./travis/before-script.sh"
 script: python setup.py test
+notifications:
+  email: false
