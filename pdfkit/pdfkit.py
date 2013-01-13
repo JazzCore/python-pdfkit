@@ -2,9 +2,11 @@
 import re
 import subprocess
 import sys
-from source import Source
-from configuration import Configuration
+from .source import Source
+from .configuration import Configuration
 from itertools import chain
+import io
+import codecs
 
 
 class PDFKit(object):
@@ -25,7 +27,7 @@ class PDFKit(object):
         self.options = dict()
         self.stylesheets = []
 
-        self.wkhtmltopdf = self.configuration.wkhtmltopdf
+        self.wkhtmltopdf = self.configuration.wkhtmltopdf.decode('utf-8')
 
         if self.source.isString():
             self.options.update(self._find_options_in_meta(url_or_file))
@@ -42,12 +44,12 @@ class PDFKit(object):
 
         args = [self.wkhtmltopdf]
 
-        args += list(chain.from_iterable(self.options.items()))
-        args = filter(None, args)
+        args += list(chain.from_iterable(list(self.options.items())))
+        args = [_f for _f in args if _f]
 
         if self.toc:
             args.append('toc')
-            args += list(chain.from_iterable(self.toc.items()))
+            args += list(chain.from_iterable(list(self.toc.items())))
         if self.cover:
             args.append('cover')
             args.append(self.cover)
@@ -83,14 +85,14 @@ class PDFKit(object):
             while True:
                 if result.poll() is not None:
                     break
-                out = result.stdout.read(1)
+                out = result.stdout.read(1).decode('utf-8')
                 if out != '':
                     sys.stdout.write(out)
                     sys.stdout.flush()
 
         if path:
             try:
-                with open(path) as f:
+                with codecs.open(path, encoding='utf-8') as f:
                     # read 4 bytes to get PDF signature '%PDF'
                     text = f.read(4)
                     if text == '':
@@ -107,7 +109,7 @@ class PDFKit(object):
     def _normalize_options(self, options):
         normalized_options = {}
 
-        for key, value in options.iteritems():
+        for key, value in list(options.items()):
             if not '--' in key:
                 normalized_key = '--%s' % self._normalize_arg(key)
             else:
@@ -141,7 +143,7 @@ class PDFKit(object):
                 self.source.source = self._style_tag_for(css_data) + self.source.to_s()
 
     def _find_options_in_meta(self, content):
-        if isinstance(content, file) or content.__class__.__name__ == 'StreamReaderWriter':
+        if isinstance(content, io.IOBase) or content.__class__.__name__ == 'StreamReaderWriter':
             content = content.read()
 
         found = {}

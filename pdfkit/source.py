@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import io
 
 
 class Source(object):
@@ -17,7 +18,7 @@ class Source(object):
         #dirty hack to check where file is opened with codecs module ( because it returns 'instance' type when encoding
         #is specified
         if path:
-            return isinstance(path, file) or path.__class__.__name__ == 'StreamReaderWriter'
+            return isinstance(path, io.IOBase) or path.__class__.__name__ == 'StreamReaderWriter'
         else:
             return 'file' in self.type
 

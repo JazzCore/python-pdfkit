@@ -4,5 +4,9 @@ python:
   - 2.7
   - 3.2 
 
+branches:
+  only:
+    - python3
+
 before_script: "./travis/before-script.sh"
 script: python setup.py test
