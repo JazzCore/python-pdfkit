@@ -1,8 +1,20 @@
 import codecs
 from distutils.core import setup
+from setuptools.command.test import test as TestCommand
 import re
+import sys
 import pdfkit
 
+class PyTest(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = ['tests/pdfkit-tests.py']
+        self.test_suite = True
+    def run_tests(self):
+        #import here, cause outside the eggs aren't loaded
+        import pytest
+        errno = pytest.main(self.test_args)
+        sys.exit(errno)
 
 def long_description():
     """Pre-process the README so that PyPi can render it properly."""
@@ -19,6 +31,8 @@ setup(
     long_description=long_description(),
     download_url='https://github.com/JazzCore/python-pdfkit',
     license=pdfkit.__license__,
+    tests_require=['pytest'],
+    cmdclass = {'test': PyTest},
     packages=['pdfkit'],
     author=pdfkit.__author__,
     author_email='stgolovanov@gmail.com',
