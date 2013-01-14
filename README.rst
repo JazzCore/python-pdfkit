@@ -22,6 +22,8 @@ Installation
 
 	$ sudo apt-get install wkhtmltopdf
 
+**Warning!** Version in debian/ubuntu repos have reduced functionality (because it compiled without the wkhtmltopdf QT patches), such as adding outlines, headers, footers, TOC etc. To use this options you should install static binary from `wkhtmltopdf <http://code.google.com/p/wkhtmltopdf/>`_ site or you can use `this script <https://github.com/JazzCore/python-pdfkit/blob/master/travis/before-script.sh>`_.
+
 * Windows and other options: check wkhtmltopdf `homepage <http://code.google.com/p/wkhtmltopdf/>`_ for binary installers
 
 Usage
