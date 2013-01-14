@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
+import io
 import sys
+import codecs
 import unittest
 
 #Prepend ../ to PYTHONPATH so that we can import PDFKIT form there.
@@ -24,6 +26,13 @@ class TestPDFKitInitialization(unittest.TestCase):
     def test_file_source(self):
         r = pdfkit.PDFKit('fixtures/example.html', 'file')
         self.assertTrue(r.source.isFile())
+
+    def test_file_source_with_path(self):
+        r = pdfkit.PDFKit('test', 'string')
+        with io.open('fixtures/example.css') as f:
+            self.assertTrue(r.source.isFile(path=f))
+        with codecs.open('fixtures/example.css') as f:
+            self.assertTrue(r.source.isFile(path=f))
 
     def test_options_parsing(self):
         r = pdfkit.PDFKit('html', 'string', options={'page-size': 'Letter'})
