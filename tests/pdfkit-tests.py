@@ -31,7 +31,7 @@ class TestPDFKitInitialization(unittest.TestCase):
         r = pdfkit.PDFKit('test', 'string')
         with io.open('fixtures/example.css') as f:
             self.assertTrue(r.source.isFile(path=f))
-        with codecs.open('fixtures/example.css') as f:
+        with codecs.open('fixtures/example.css', encoding='UTF-8') as f:
             self.assertTrue(r.source.isFile(path=f))
 
     def test_options_parsing(self):
