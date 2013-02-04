@@ -106,10 +106,10 @@ Configuration
 
 Each API call takes an optional configuration paramater. This should be an instance of `pdfkit.configuration.Configuration()` - it takes the configuration options as initial paramaters. The available options are:
 
-    * `wkhtmltopdf` - the location of the `wkhtmltopdf` binary. By default `pdfkit` will attempt to locate this using `which` (on UNIX type systems) or `where` (on Windows).
-    * `meta_tag_prefix` - the prefix for `pdfkit` specif meta tags - by default this is `pdfkit-`
+* `wkhtmltopdf` - the location of the `wkhtmltopdf` binary. By default `pdfkit` will attempt to locate this using `which` (on UNIX type systems) or `where` (on Windows).
+* `meta_tag_prefix` - the prefix for `pdfkit` specif meta tags - by default this is `pdfkit-`
 
- example - for when `wkhtmltopdf` is not on `$PATH`:
+Example - for when `wkhtmltopdf` is not on `$PATH`:
 
 .. code-block:: python
 
