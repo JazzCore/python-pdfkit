@@ -3,7 +3,7 @@
 from .pdfkit import PDFKit
 
 
-def from_url(url, output_path, options=None, toc=None, cover=None):
+def from_url(url, output_path, options=None, toc=None, cover=None, configuration=None):
 #TODO rework
     """
     Convert file of files from URLs to PDF document
@@ -13,14 +13,17 @@ def from_url(url, output_path, options=None, toc=None, cover=None):
     :param options: (optional) dict with wkhtmltopdf global and page options, with or w/o '--'
     :param toc: (optional) dict with toc-specific wkhtmltopdf options, with or w/o '--'
     :param cover: (optional) string with url/filename with a cover html page
+    :param configuration: (optional) instance of pdfkit.configuration.Configuration()
     """
 
-    r = PDFKit(url, 'url', options=options, toc=toc, cover=cover)
+    r = PDFKit(url, 'url', options=options, toc=toc, cover=cover,
+               configuration=configuration)
 
     r.to_file(output_path)
 
 
-def from_file(input, output_path, options=None, toc=None, cover=None, css=None):
+def from_file(input, output_path, options=None, toc=None, cover=None, css=None,
+              configuration=None):
     """
     Convert HTML file or files to PDF document
 
@@ -30,14 +33,17 @@ def from_file(input, output_path, options=None, toc=None, cover=None, css=None):
     :param toc: (optional) dict with toc-specific wkhtmltopdf options, with or w/o '--'
     :param cover: (optional) string with url/filename with a cover html page
     :param css: (optional) string with path to css file which will be added to a single input file
+    :param configuration: (optional) instance of pdfkit.configuration.Configuration()
     """
 
-    r = PDFKit(input, 'file', options=options, toc=toc, cover=cover, css=css)
+    r = PDFKit(input, 'file', options=options, toc=toc, cover=cover, css=css,
+               configuration=configuration)
 
     r.to_file(output_path)
 
 
-def from_string(input, output_path, options=None, toc=None, cover=None, css=None):
+def from_string(input, output_path, options=None, toc=None, cover=None, css=None,
+                configuration=None):
     """
     Convert given string or strings to PDF document
 
@@ -47,9 +53,10 @@ def from_string(input, output_path, options=None, toc=None, cover=None, css=None
     :param toc: (optional) dict with toc-specific wkhtmltopdf options, with or w/o '--'
     :param cover: (optional) string with url/filename with a cover html page
     :param css: (optional) string with path to css file which will be added to a input string
-
+    :param configuration: (optional) instance of pdfkit.configuration.Configuration()
     """
 
-    r = PDFKit(input, 'string', options=options, toc=toc, cover=cover, css=css)
+    r = PDFKit(input, 'string', options=options, toc=toc, cover=cover, css=css,
+               configuration=configuration)
 
     r.to_file(output_path)
