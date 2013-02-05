@@ -4,10 +4,10 @@ import sys
 
 
 class Configuration(object):
-    def __init__(self):
-        self.meta_tag_prefix = 'pdfkit-'
+    def __init__(self, wkhtmltopdf='', meta_tag_prefix='pdfkit-'):
+        self.meta_tag_prefix = meta_tag_prefix
 
-        self.wkhtmltopdf = ''
+        self.wkhtmltopdf = wkhtmltopdf
 
         if not self.wkhtmltopdf:
             if sys.platform == 'win32':
@@ -21,6 +21,6 @@ class Configuration(object):
             with open(self.wkhtmltopdf) as f:
                 pass
         except IOError:
-            raise IOError('No wkhtmltopdf executable found: %s\n'
+            raise IOError('No wkhtmltopdf executable found: "%s"\n'
                           'Please install wkhtmltopdf - '
                           'https://github.com/JazzCore/python-pdfkit/wiki/Installing-wkhtmltopdf' % self.wkhtmltopdf)

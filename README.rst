@@ -101,9 +101,25 @@ You can also pass any options through meta tags in your HTML:
 
 	pdfkit.from_string(body, 'out.pdf') #with --page-size=Legal and --orientation=Landscape
 
+Configuration
+-------------
+
+Each API call takes an optional configuration paramater. This should be an instance of ``pdfkit.configuration.Configuration()`` - it takes the configuration options as initial paramaters. The available options are:
+
+* ``wkhtmltopdf`` - the location of the ``wkhtmltopdf`` binary. By default ``pdfkit`` will attempt to locate this using ``which`` (on UNIX type systems) or ``where`` (on Windows).
+* ``meta_tag_prefix`` - the prefix for ``pdfkit`` specific meta tags - by default this is ``pdfkit-``
+
+Example - for when ``wkhtmltopdf`` is not on ``$PATH``:
+
+.. code-block:: python
+
+    config = pdfkit.configuration.Configuration(wkhtmltopdf='/opt/bin/wkhtmltopdf'))
+    pdfkit.from_string(html_string, output_file, configuration=config)
+
+
 Troubleshooting
 ---------------
 
 - ``IOError: 'No wkhtmltopdf executable found'``:
 
-  Make sure that you have wkhtmltopdf in your PATH. *where wkhtmltopdf* in Windows or *which wkhtmltopdf* on Linux should return actual path to binary.
+  Make sure that you have wkhtmltopdf in your `$PATH` or set via custom configuration (see preceding section). *where wkhtmltopdf* in Windows or *which wkhtmltopdf* on Linux should return actual path to binary.
