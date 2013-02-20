@@ -19,7 +19,7 @@ def from_url(url, output_path, options=None, toc=None, cover=None, configuration
     r = PDFKit(url, 'url', options=options, toc=toc, cover=cover,
                configuration=configuration)
 
-    r.to_file(output_path)
+    r.to_pdf(output_path)
 
 
 def from_file(input, output_path, options=None, toc=None, cover=None, css=None,
@@ -39,7 +39,7 @@ def from_file(input, output_path, options=None, toc=None, cover=None, css=None,
     r = PDFKit(input, 'file', options=options, toc=toc, cover=cover, css=css,
                configuration=configuration)
 
-    r.to_file(output_path)
+    r.to_pdf(output_path)
 
 
 def from_string(input, output_path, options=None, toc=None, cover=None, css=None,
@@ -59,4 +59,4 @@ def from_string(input, output_path, options=None, toc=None, cover=None, css=None
     r = PDFKit(input, 'string', options=options, toc=toc, cover=cover, css=css,
                configuration=configuration)
 
-    r.to_file(output_path)
+    r.to_pdf(output_path)
