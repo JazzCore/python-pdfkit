@@ -120,6 +120,14 @@ class PDFKit(object):
                               ' '.join(args))
 
     def _normalize_options(self, options):
+        """Updates a dict of config options to make then usable on command line
+
+        options: dict {option name: value}
+
+        returns:
+          dict: {option name: value} - option names lower cased and prepended with
+                                       '--' if necessary. Non-empty values cast to str
+        """
         normalized_options = {}
 
         for key, value in list(options.items()):
@@ -160,6 +168,13 @@ class PDFKit(object):
                 self.source.source = self._style_tag_for(css_data) + self.source.to_s()
 
     def _find_options_in_meta(self, content):
+        """Reads 'content' and extracts options encoded in HTML meta tags
+
+        content: str or file-like object - contains HTML to parse
+
+        returns:
+          dict: {config option: value}
+        """
         if isinstance(content, io.IOBase) \
                 or content.__class__.__name__ == 'StreamReaderWriter':
             content = content.read()
