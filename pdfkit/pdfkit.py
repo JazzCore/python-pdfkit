@@ -80,8 +80,6 @@ class PDFKit(object):
         else:
             args.append('-')
 
-        #args = map(lambda x: '"%s"' % x, args)
-
         return args
 
     def to_pdf(self, path=None):

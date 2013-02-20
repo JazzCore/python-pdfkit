@@ -4,7 +4,6 @@ from .pdfkit import PDFKit
 
 
 def from_url(url, output_path, options=None, toc=None, cover=None, configuration=None):
-#TODO rework
     """
     Convert file of files from URLs to PDF document
 
