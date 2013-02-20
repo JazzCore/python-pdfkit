@@ -11,14 +11,14 @@ import codecs
 
 class PDFKit(object):
     """
-    url_or_file: str - either a URL, a path to a file or a string containing HTML
+    :param url_or_file: str - either a URL, a path to a file or a string containing HTML
                        to convert
-    type_:       str - either 'url', 'file' or 'string'
-    options:     dict (optional) with wkhtmltopdf options, with or w/o '--'
-    toc:         dict (optional) - toc-specific wkhtmltopdf options, with or w/o '--'
-    cover:       str (optional) - url/filename with a cover html page
-    css:         str (optional) - path to css file which will be added to input string
-    configuration: (optional) instance of pdfkit.configuration.Configuration()
+    :param type_: str - either 'url', 'file' or 'string'
+    :param options: dict (optional) with wkhtmltopdf options, with or w/o '--'
+    :param toc: dict (optional) - toc-specific wkhtmltopdf options, with or w/o '--'
+    :param cover: str (optional) - url/filename with a cover html page
+    :param css: str (optional) - path to css file which will be added to input string
+    :param configuration: (optional) instance of pdfkit.configuration.Configuration()
     """
 
     class ImproperSourceError(Exception):
@@ -122,7 +122,7 @@ class PDFKit(object):
     def _normalize_options(self, options):
         """Updates a dict of config options to make then usable on command line
 
-        options: dict {option name: value}
+        :param options: dict {option name: value}
 
         returns:
           dict: {option name: value} - option names lower cased and prepended with
@@ -170,7 +170,7 @@ class PDFKit(object):
     def _find_options_in_meta(self, content):
         """Reads 'content' and extracts options encoded in HTML meta tags
 
-        content: str or file-like object - contains HTML to parse
+        :param content: str or file-like object - contains HTML to parse
 
         returns:
           dict: {config option: value}
