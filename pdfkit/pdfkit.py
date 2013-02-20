@@ -34,8 +34,8 @@ class PDFKit(object):
                  css=None, configuration=None):
 
         self.source = Source(url_or_file, type_)
-        self.configuration = Configuration() if configuration is None \
-            else configuration
+        self.configuration = (Configuration() if configuration is None
+                              else configuration)
 
         self.wkhtmltopdf = self.configuration.wkhtmltopdf.decode('utf-8')
 
@@ -175,8 +175,8 @@ class PDFKit(object):
         returns:
           dict: {config option: value}
         """
-        if isinstance(content, io.IOBase) \
-                or content.__class__.__name__ == 'StreamReaderWriter':
+        if (isinstance(content, io.IOBase)
+                or content.__class__.__name__ == 'StreamReaderWriter'):
             content = content.read()
 
         found = {}
