@@ -119,9 +119,6 @@ class PDFKit(object):
                               'Check whhtmltopdf output without \'quiet\' option' %
                               ' '.join(args))
 
-    def to_file(self, path):
-        self.to_pdf(path)
-
     def _normalize_options(self, options):
         normalized_options = {}
 
