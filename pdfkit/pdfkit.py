@@ -104,7 +104,7 @@ class PDFKit(object):
             input = None
         stdout, stderr = result.communicate(input=input)
 
-        # capture output of wkhtmltopdf and pass it to stdout (can be
+        # capture output of wkhtmltopdf and pass it to stderr (can be
         # seen only when running from console)
         if self.verbose: sys.stderr.write(stderr)
 
