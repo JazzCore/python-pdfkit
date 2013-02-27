@@ -263,6 +263,12 @@ class TestPDFKitGeneration(unittest.TestCase):
         r._prepend_css(css)
         self.assertIn('font-size', r.source.to_s())
 
+    def test_pdf_generation_from_file_like(self):
+        with open('fixtures/example.html', 'r') as f:
+            r = pdfkit.PDFKit(f, 'file')
+            output = r.to_pdf()
+        self.assertEqual(output[:4], '%PDF')
+
     def test_raise_error_with_wrong_css_path(self):
         css = 'fixtures/wrongpath.css'
         r = pdfkit.PDFKit('fixtures/example.html', 'file', css=css)

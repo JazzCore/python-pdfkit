@@ -9,3 +9,5 @@ __license__ = 'MIT'
 
 from .pdfkit import PDFKit
 from .api import from_url, from_file, from_string
+from .configuration import Configuration
+
