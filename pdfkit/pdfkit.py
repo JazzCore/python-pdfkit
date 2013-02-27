@@ -31,13 +31,13 @@ class PDFKit(object):
             return self.msg
 
     def __init__(self, url_or_file, type_, options=None, toc=None, cover=None,
-                 css=None, configuration=None):
+                 css=None, configuration=None, verbose=False):
 
         self.source = Source(url_or_file, type_)
         self.configuration = (Configuration() if configuration is None
                               else configuration)
-
         self.wkhtmltopdf = self.configuration.wkhtmltopdf.decode('utf-8')
+        self.verbose = verbose
 
         self.options = dict()
         if self.source.isString():
@@ -67,7 +67,9 @@ class PDFKit(object):
             args.append('cover')
             args.append(self.cover)
 
-        if self.source.isString():
+        # If the source is a string then we will pipe it into wkhtmltopdf
+        # If the source is file-like then we will read from it and pipe it in
+        if self.source.isString() or self.source.isFileObj():
             args.append('-')
         else:
             if isinstance(self.source.source, str):
@@ -75,6 +77,8 @@ class PDFKit(object):
             else:
                 args += self.source.source
 
+        # If output_path evaluates to False append '-' to end of args
+        # and wkhtmltopdf will pass generated PDF to stdout
         if path:
             args.append(path)
         else:
@@ -85,24 +89,28 @@ class PDFKit(object):
     def to_pdf(self, path=None):
         args = self.command(path)
 
-        result = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        if self.source.isString():
-            result.communicate(input=self.source.to_s().encode('utf-8'))
-        elif self.source.isFile() and self.css:
-            result.communicate(input=self.source.to_s().encode('utf-8'))
+        result = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE)
 
-        # capture output of wkhtmltopdf and pass it to stdout (can be
-        # seen only when running from console )
-        if '--quiet' not in args:
-            while True:
-                if result.poll() is not None:
-                    break
-                out = result.stdout.read(1).decode('utf-8')
-                if out != '':
-                    sys.stdout.write(out)
-                    sys.stdout.flush()
+        # If the source is a string then we will pipe it into wkhtmltopdf.
+        # If we want to add custom CSS to file then we read input file to
+        # string and prepend css to it and then pass it to stdin.
+        # This is a workaround for a bug in wkhtmltopdf (look closely in README)
+        if self.source.isString() or (self.source.isFile() and self.css):
+            input = self.source.to_s().encode('utf-8')
+        elif self.source.isFileObj():
+            input = self.source.source.read()
+        else:
+            input = None
+        stdout, stderr = result.communicate(input=input)
 
-        if path:
+        # capture output of wkhtmltopdf and pass it to stderr (can be
+        # seen only when running from console)
+        if self.verbose: sys.stderr.write(stderr)
+
+        if not path:
+            return stdout
+        else:
             try:
                 with codecs.open(path, encoding='utf-8') as f:
                     # read 4 bytes to get PDF signature '%PDF'
