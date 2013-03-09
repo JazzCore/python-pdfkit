@@ -4,10 +4,9 @@ Wkhtmltopdf python wrapper to convert html to pdf using the webkit rendering eng
 """
 
 __author__ = 'Golovanov Stanislav'
-__version__ = '0.3.0'
+__version__ = '0.4.0'
 __license__ = 'MIT'
 
 from .pdfkit import PDFKit
 from .api import from_url, from_file, from_string
 from .configuration import Configuration
-
