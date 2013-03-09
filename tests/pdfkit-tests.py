@@ -272,7 +272,7 @@ class TestPDFKitGeneration(unittest.TestCase):
         with open('fixtures/example.html', 'r') as f:
             r = pdfkit.PDFKit(f, 'file')
             output = r.to_pdf()
-        self.assertEqual(output[:4], '%PDF')
+        self.assertEqual(output[:4].decode('utf-8'), '%PDF')
 
     def test_raise_error_with_wrong_css_path(self):
         css = 'fixtures/wrongpath.css'

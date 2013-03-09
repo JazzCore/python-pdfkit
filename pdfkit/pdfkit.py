@@ -98,18 +98,18 @@ class PDFKit(object):
         if self.source.isString() or (self.source.isFile() and self.css):
             input = self.source.to_s().encode('utf-8')
         elif self.source.isFileObj():
-            input = self.source.source.read()
+            input = self.source.source.read().encode('utf-8')
         else:
             input = None
         stdout, stderr = result.communicate(input=input)
 
-        if 'Error' in stderr:
-            raise IOError('wkhtmltopdf reported an error:\n' + stderr)
+        if 'Error' in stderr.decode('utf-8'):
+            raise IOError('wkhtmltopdf reported an error:\n' + stderr.decode('utf-8'))
 
         # Since wkhtmltopdf sends its output to stderr we will capture it
         # and properly send to stdout
         if '--quiet' not in args:
-            sys.stdout.write(stderr)
+            sys.stdout.write(stderr.decode('utf-8'))
 
         if not path:
             return stdout
