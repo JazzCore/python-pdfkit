@@ -1,5 +1,11 @@
 Changelog
 ---------
+* `0.4.0`
+    * Allow passing file-like objects
+    * Ability to return PDF as a string
+    * Allow user specification of configuration
+    * API calls now returns True on success
+    * bugfixes
 * `0.3.0`
     * Python 3 support
 * `0.2.4`
