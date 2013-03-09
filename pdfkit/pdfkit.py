@@ -31,13 +31,12 @@ class PDFKit(object):
             return self.msg
 
     def __init__(self, url_or_file, type_, options=None, toc=None, cover=None,
-                 css=None, configuration=None, verbose=False):
+                 css=None, configuration=None):
 
         self.source = Source(url_or_file, type_)
         self.configuration = (Configuration() if configuration is None
                               else configuration)
         self.wkhtmltopdf = self.configuration.wkhtmltopdf.decode('utf-8')
-        self.verbose = verbose
 
         self.options = dict()
         if self.source.isString():
@@ -106,7 +105,8 @@ class PDFKit(object):
 
         # capture output of wkhtmltopdf and pass it to stderr (can be
         # seen only when running from console)
-        if self.verbose: sys.stderr.write(stderr)
+        if '--quiet' not in args:
+            sys.stderr.write(stderr)
 
         if not path:
             return stdout
