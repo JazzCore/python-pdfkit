@@ -122,7 +122,7 @@ class PDFKit(object):
                         raise IOError('Command failed: %s\n'
                                       'Check whhtmltopdf output without \'quiet\' '
                                       'option' % ' '.join(args))
-                    return text
+                    return True
             except IOError:
                 raise IOError('Command failed: %s\n'
                               'Check whhtmltopdf output without \'quiet\' option' %

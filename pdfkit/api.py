@@ -13,6 +13,8 @@ def from_url(url, output_path, options=None, toc=None, cover=None, configuration
     :param toc: (optional) dict with toc-specific wkhtmltopdf options, with or w/o '--'
     :param cover: (optional) string with url/filename with a cover html page
     :param configuration: (optional) instance of pdfkit.configuration.Configuration()
+
+    Returns: True on success
     """
 
     r = PDFKit(url, 'url', options=options, toc=toc, cover=cover,
@@ -33,6 +35,8 @@ def from_file(input, output_path, options=None, toc=None, cover=None, css=None,
     :param cover: (optional) string with url/filename with a cover html page
     :param css: (optional) string with path to css file which will be added to a single input file
     :param configuration: (optional) instance of pdfkit.configuration.Configuration()
+
+    Returns: True on success
     """
 
     r = PDFKit(input, 'file', options=options, toc=toc, cover=cover, css=css,
@@ -53,6 +57,8 @@ def from_string(input, output_path, options=None, toc=None, cover=None, css=None
     :param cover: (optional) string with url/filename with a cover html page
     :param css: (optional) string with path to css file which will be added to a input string
     :param configuration: (optional) instance of pdfkit.configuration.Configuration()
+
+    Returns: True on success
     """
 
     r = PDFKit(input, 'string', options=options, toc=toc, cover=cover, css=css,
