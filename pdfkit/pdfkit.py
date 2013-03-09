@@ -103,10 +103,13 @@ class PDFKit(object):
             input = None
         stdout, stderr = result.communicate(input=input)
 
-        # capture output of wkhtmltopdf and pass it to stderr (can be
-        # seen only when running from console)
+        if 'Error' in stderr:
+            raise IOError('wkhtmltopdf reported an error:\n' + stderr)
+
+        # Since wkhtmltopdf sends its output to stderr we will capture it
+        # and properly send to stdout
         if '--quiet' not in args:
-            sys.stderr.write(stderr)
+            sys.stdout.write(stderr)
 
         if not path:
             return stdout

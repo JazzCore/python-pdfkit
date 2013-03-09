@@ -263,6 +263,11 @@ class TestPDFKitGeneration(unittest.TestCase):
         r._prepend_css(css)
         self.assertIn('font-size', r.source.to_s())
 
+    def test_wkhtmltopdf_error_handling(self):
+        r = pdfkit.PDFKit('clearlywrongurl.asdf', 'url')
+        with self.assertRaises(IOError):
+            r.to_pdf()
+
     def test_pdf_generation_from_file_like(self):
         with open('fixtures/example.html', 'r') as f:
             r = pdfkit.PDFKit(f, 'file')
