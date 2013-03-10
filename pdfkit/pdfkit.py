@@ -11,6 +11,8 @@ import codecs
 
 class PDFKit(object):
     """
+    Main class that does all generation routine.
+
     :param url_or_file: str - either a URL, a path to a file or a string containing HTML
                        to convert
     :param type_: str - either 'url', 'file' or 'string'

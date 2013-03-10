@@ -47,6 +47,14 @@ class TestPDFKitInitialization(unittest.TestCase):
         r = pdfkit.PDFKit('html', 'string', options={'--page-size': 'Letter'})
         self.assertTrue(r.options['--page-size'])
 
+    def test_custom_configuration(self):
+        conf = pdfkit.configuration()
+        self.assertEqual('pdfkit-', conf.meta_tag_prefix)
+        conf = pdfkit.configuration(meta_tag_prefix='prefix-')
+        self.assertEqual('prefix-', conf.meta_tag_prefix)
+        with self.assertRaises(IOError):
+            conf = pdfkit.configuration(wkhtmltopdf='wrongpath')
+
 
 class TestPDFKitCommandGeneration(unittest.TestCase):
     """Test command() method"""

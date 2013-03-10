@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from .pdfkit import PDFKit
+from .pdfkit import Configuration
 
 
 def from_url(url, output_path, options=None, toc=None, cover=None, configuration=None):
@@ -65,3 +66,14 @@ def from_string(input, output_path, options=None, toc=None, cover=None, css=None
                configuration=configuration)
 
     return r.to_pdf(output_path)
+
+
+def configuration(**kwargs):
+    """
+    Constructs and returns a :class:`Configuration` with given options
+
+    :param wkhtmltopdf: path to binary
+    :param meta_tag_prefix: the prefix for ``pdfkit`` specific meta tags
+    """
+
+    return Configuration(**kwargs)

@@ -8,5 +8,4 @@ __version__ = '0.4.0'
 __license__ = 'MIT'
 
 from .pdfkit import PDFKit
-from .api import from_url, from_file, from_string
-from .configuration import Configuration
+from .api import from_url, from_file, from_string, configuration
