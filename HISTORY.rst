@@ -1,5 +1,8 @@
 Changelog
 ---------
+* `0.4.1`
+    * More easier custom configuration setting
+    * Update README
 * `0.4.0`
     * Allow passing file-like objects
     * Ability to return PDF as a string
