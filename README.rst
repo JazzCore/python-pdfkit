@@ -57,6 +57,13 @@ Also you can pass an opened file:
     with open('file.html') as f:
         pdfkit.from_file(f, 'out.pdf')
 
+If you wish to further process generated PDF, you can read it to a variable:
+
+.. code-block:: python
+
+    # Use False instead of output path to save pdf to a variable
+    pdf = pdfkit.from_url('http://google.com', False)
+
 You can specify all wkhtmltopdf `options <http://madalgo.au.dk/~jakobt/wkhtmltoxdoc/wkhtmltopdf_0.10.0_rc2-doc.html>`_. You can drop '--' in option name. If option without value, use *None, False* or *''* for dict value:
 
 .. code-block:: python
@@ -73,6 +80,15 @@ You can specify all wkhtmltopdf `options <http://madalgo.au.dk/~jakobt/wkhtmltox
 
 	pdfkit.from_url('http://google.com', 'out.pdf', options=options)
 
+By default, PDFKit will show all ``wkhtmltopdf`` output. If you dont want it, you need to pass ``quiet`` option:
+
+.. code-block:: python
+
+    options = {
+        'quiet': ''
+        }
+
+    pdfkit.from_url('google.com', 'out.pdf', options=options)
 
 Due to wkhtmltopdf command syntax, **TOC** and **Cover** options must be specified separately:
 
