@@ -27,6 +27,11 @@ class TestPDFKitInitialization(unittest.TestCase):
         r = pdfkit.PDFKit('fixtures/example.html', 'file')
         self.assertTrue(r.source.isFile())
 
+    def test_file_object_source(self):
+        with open('fixtures/example.html') as fl:
+            r = pdfkit.PDFKit(fl, 'file')
+            self.assertTrue(r.source.isFileObj())
+
     def test_file_source_with_path(self):
         r = pdfkit.PDFKit('test', 'string')
         with io.open('fixtures/example.css') as f:
