@@ -19,7 +19,7 @@ class PDFKit(object):
     :param options: dict (optional) with wkhtmltopdf options, with or w/o '--'
     :param toc: dict (optional) - toc-specific wkhtmltopdf options, with or w/o '--'
     :param cover: str (optional) - url/filename with a cover html page
-    :param css: str (optional) - path to css file which will be added to input string
+    :param css: str (optional) - path to css file which will be added to input string or a list with multiple paths
     :param configuration: (optional) instance of pdfkit.configuration.Configuration()
     """
 
@@ -161,8 +161,14 @@ class PDFKit(object):
             raise self.ImproperSourceError('CSS file can be added only to a single '
                                            'file or string')
 
-        with open(path) as f:
-            css_data = f.read()
+        if not hasattr(path, "__iter__"):
+            path = [path]
+
+        css_data = ""
+        for p in path:
+            with open(p) as f:
+                css_data += f.read()
+                css_data += "\n"
 
         if self.source.isFile():
             with open(self.source.to_s()) as f:
