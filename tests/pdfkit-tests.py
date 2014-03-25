@@ -293,5 +293,14 @@ class TestPDFKitGeneration(unittest.TestCase):
         with self.assertRaises(IOError):
             r.to_pdf()
 
+    def test_raise_error_if_bad_wkhtmltopdf_option(self):
+        r = pdfkit.PDFKit('<html><body>Hai!</body></html>', 'string',
+                          options={'bad-option': None})
+        with self.assertRaises(IOError) as cm:
+            r.to_pdf()
+
+        raised_exception = cm.exception
+        self.assertRegexpMatches(raised_exception.message, '^wkhtmltopdf exited with non-zero code 1. error:\nUnknown long argument --bad-option\n')
+
 if __name__ == "__main__":
     unittest.main()
