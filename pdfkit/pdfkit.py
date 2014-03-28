@@ -105,8 +105,13 @@ class PDFKit(object):
             input = None
         stdout, stderr = result.communicate(input=input)
 
+        exit_code = result.returncode
+
         if 'Error' in stderr.decode('utf-8'):
             raise IOError('wkhtmltopdf reported an error:\n' + stderr.decode('utf-8'))
+
+        if exit_code != 0:
+            raise IOError("wkhtmltopdf exited with non-zero code {0}. error:\n{1}".format(exit_code, stderr.decode("utf-8")))
 
         # Since wkhtmltopdf sends its output to stderr we will capture it
         # and properly send to stdout
