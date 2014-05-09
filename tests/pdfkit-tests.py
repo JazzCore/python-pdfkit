@@ -263,6 +263,33 @@ class TestPDFKitGeneration(unittest.TestCase):
         r._prepend_css('fixtures/example.css')
         self.assertIn('<style>%s</style><html>' % css, r.source.to_s())
 
+    def test_multiple_stylesheets_adding_to_the_head(self):
+        #TODO rewrite this part of pdfkit.py
+        css_files = ['fixtures/example.css', 'fixtures/example2.css']
+        r = pdfkit.PDFKit('<html><head></head><body>Hai!</body></html>', 'string',
+                          css=css_files)
+
+        css=[]
+        for css_file in css_files:
+            with open(css_file) as f:
+                css.append(f.read())
+
+        r._prepend_css(css_files)
+        self.assertIn('<style>%s</style>' % "\n".join(css), r.source.to_s())
+
+    def test_multiple_stylesheet_adding_without_head_tag(self):
+        css_files = ['fixtures/example.css', 'fixtures/example2.css']
+        r = pdfkit.PDFKit('<html><body>Hai!</body></html>', 'string',
+                          options={'quiet': None}, css=css_files)
+
+        css=[]
+        for css_file in css_files:
+            with open(css_file) as f:
+                css.append(f.read())
+
+        r._prepend_css(css_files)
+        self.assertIn('<style>%s</style><html>' % "\n".join(css), r.source.to_s())
+
     def test_stylesheet_throw_error_when_url(self):
         r = pdfkit.PDFKit('http://ya.ru', 'url', css='fixtures/example.css')
 
