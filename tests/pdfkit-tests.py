@@ -5,6 +5,7 @@ import sys
 import codecs
 import unittest
 
+
 #Prepend ../ to PYTHONPATH so that we can import PDFKIT form there.
 TESTS_ROOT = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.realpath(os.path.join(TESTS_ROOT, '..')))
