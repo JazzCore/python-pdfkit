@@ -109,16 +109,12 @@ You can specify external CSS files when converting files or strings using *css* 
 .. code-block:: python
 
     # Single CSS file
-	css = 'example.css'
-
-	pdfkit.from_file('file.html', options=options, css=css)
-
+    css = 'example.css'
+    pdfkit.from_file('file.html', options=options, css=css)
 
     # Multiple CSS files
-
     css = ['example.css', 'example2.css']
-
-	pdfkit.from_file('file.html', options=options, css=css)
+    pdfkit.from_file('file.html', options=options, css=css)
 
 You can also pass any options through meta tags in your HTML:
 
