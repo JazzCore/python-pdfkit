@@ -102,13 +102,21 @@ Due to wkhtmltopdf command syntax, **TOC** and **Cover** options must be specifi
 
 	pdfkit.from_file('file.html', options=options, toc=toc, cover=cover)
 
-You can specify external CSS file when converting files or strings using *css* option.
+You can specify external CSS files when converting files or strings using *css* option.
 
 **Warning** This is a workaround for `this bug <http://code.google.com/p/wkhtmltopdf/issues/detail?id=144>`_ in wkhtmltopdf. You should try *--user-style-sheet* option first.
 
 .. code-block:: python
 
+    # Single CSS file
 	css = 'example.css'
+
+	pdfkit.from_file('file.html', options=options, css=css)
+
+
+    # Multiple CSS files
+
+    css = ['example.css', 'example2.css']
 
 	pdfkit.from_file('file.html', options=options, css=css)
 
