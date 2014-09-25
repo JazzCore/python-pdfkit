@@ -170,12 +170,12 @@ class PDFKit(object):
 
         css_data = []
         for p in path:
-            with open(p) as f:
+            with codecs.open(p, encoding="UTF-8") as f:
                 css_data.append(f.read())
         css_data = "\n".join(css_data)
 
         if self.source.isFile():
-            with open(self.source.to_s()) as f:
+            with codecs.open(self.source.to_s(), encoding="UTF-8") as f:
                 inp = f.read()
             self.source = Source(
                 inp.replace('</head>', self._style_tag_for(css_data) + '</head>'),
