@@ -1,5 +1,11 @@
 Changelog
 ---------
+* `0.4.2`
+    * Allow passing multiple css files
+    * Fix problems with external file encodings
+    * Rise an error when X server is missing on *nix systems
+    * Fix tests that was broken with latest wkhtmltopdf release
+    * Update README
 * `0.4.1`
     * More easier custom configuration setting
     * Update README

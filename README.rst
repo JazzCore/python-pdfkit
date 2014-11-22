@@ -26,9 +26,9 @@ Installation
 
 	$ sudo apt-get install wkhtmltopdf
 
-**Warning!** Version in debian/ubuntu repos have reduced functionality (because it compiled without the wkhtmltopdf QT patches), such as adding outlines, headers, footers, TOC etc. To use this options you should install static binary from `wkhtmltopdf <http://code.google.com/p/wkhtmltopdf/>`_ site or you can use `this script <https://github.com/JazzCore/python-pdfkit/blob/master/travis/before-script.sh>`_.
+**Warning!** Version in debian/ubuntu repos have reduced functionality (because it compiled without the wkhtmltopdf QT patches), such as adding outlines, headers, footers, TOC etc. To use this options you should install static binary from `wkhtmltopdf <http://wkhtmltopdf.org/>`_ site or you can use `this script <https://github.com/JazzCore/python-pdfkit/blob/master/travis/before-script.sh>`_.
 
-* Windows and other options: check wkhtmltopdf `homepage <http://code.google.com/p/wkhtmltopdf/>`_ for binary installers
+* Windows and other options: check wkhtmltopdf `homepage <http://wkhtmltopdf.org/>`_ for binary installers
 
 Usage
 -----
@@ -64,7 +64,7 @@ If you wish to further process generated PDF, you can read it to a variable:
     # Use False instead of output path to save pdf to a variable
     pdf = pdfkit.from_url('http://google.com', False)
 
-You can specify all wkhtmltopdf `options <http://madalgo.au.dk/~jakobt/wkhtmltoxdoc/wkhtmltopdf_0.10.0_rc2-doc.html>`_. You can drop '--' in option name. If option without value, use *None, False* or *''* for dict value:
+You can specify all wkhtmltopdf `options <http://wkhtmltopdf.org/usage/wkhtmltopdf.txt>`_. You can drop '--' in option name. If option without value, use *None, False* or *''* for dict value:
 
 .. code-block:: python
 
