@@ -42,49 +42,73 @@ class PDFKit(object):
         self.options = dict()
         if self.source.isString():
             self.options.update(self._find_options_in_meta(url_or_file))
-        if options is not None: self.options.update(options)
-        self.options = self._normalize_options(self.options)
 
-        toc = {} if toc is None else toc
-        self.toc = self._normalize_options(toc)
+        if options is not None: self.options.update(options)
+
+        self.toc = {} if toc is None else toc
         self.cover = cover
         self.css = css
         self.stylesheets = []
 
-    def command(self, path=None):
+    def _genargs(self, opts):
+        """
+        Generator of args parts based on options specification.
+
+        Note: Empty parts will be filtered out at _command generator
+        """
+        for optkey, optval in self._normalize_options(opts):
+            yield optkey
+
+            if isinstance(optval, (list, tuple)):
+                assert len(optval) == 2 and optval[0] and optval[1], 'Option value can only be either a string or a (tuple, list) of 2 items'
+                yield optval[0]
+                yield optval[1]
+            else:
+                yield optval
+
+    def _command(self, path=None):
+        """
+        Generator of all command parts
+        """
         if self.css:
             self._prepend_css(self.css)
 
-        args = [self.wkhtmltopdf]
+        yield self.wkhtmltopdf
 
-        args += list(chain.from_iterable(list(self.options.items())))
-        args = [_f for _f in args if _f]
+        for argpart in self._genargs(self.options):
+            if argpart:
+                yield argpart
 
         if self.toc:
-            args.append('toc')
-            args += list(chain.from_iterable(list(self.toc.items())))
+            yield 'toc'
+            for argpart in self._genargs(self.toc):
+                if argpart:
+                    yield argpart
+
         if self.cover:
-            args.append('cover')
-            args.append(self.cover)
+            yield 'cover'
+            yield self.cover
 
         # If the source is a string then we will pipe it into wkhtmltopdf
         # If the source is file-like then we will read from it and pipe it in
         if self.source.isString() or self.source.isFileObj():
-            args.append('-')
+            yield '-'
         else:
             if isinstance(self.source.source, str):
-                args.append(self.source.to_s())
+                yield self.source.to_s()
             else:
-                args += self.source.source
+                for s in self.source.source:
+                    yield s
 
         # If output_path evaluates to False append '-' to end of args
         # and wkhtmltopdf will pass generated PDF to stdout
         if path:
-            args.append(path)
+            yield path
         else:
-            args.append('-')
+            yield '-'
 
-        return args
+    def command(self, path=None):
+        return list(self._command(path))
 
     def to_pdf(self, path=None):
         args = self.command(path)
@@ -108,7 +132,7 @@ class PDFKit(object):
 
         if 'cannot connect to X server' in stderr.decode('utf-8'):
             raise IOError('%s\n'
-                          'You will need to run whktmltopdf within a "virutal" X server.\n'
+                          'You will need to run whktmltopdf within a "virtual" X server.\n'
                           'Go to the link above for more information\n'
                           'https://github.com/JazzCore/python-pdfkit/wiki/Using-wkhtmltopdf-without-X-server' % stderr.decode('utf-8'))
 
@@ -141,13 +165,15 @@ class PDFKit(object):
                               ' '.join(args))
 
     def _normalize_options(self, options):
-        """Updates a dict of config options to make then usable on command line
+        """ Generator of 2-tuples (option-key, option-value).
+        When options spec is a list, generate a 2-tuples per list item.
 
         :param options: dict {option name: value}
 
         returns:
-          dict: {option name: value} - option names lower cased and prepended with
-                                       '--' if necessary. Non-empty values cast to str
+          iterator (option-key, option-value) 
+          - option names lower cased and prepended with
+          '--' if necessary. Non-empty values cast to str
         """
         normalized_options = {}
 
@@ -156,9 +182,12 @@ class PDFKit(object):
                 normalized_key = '--%s' % self._normalize_arg(key)
             else:
                 normalized_key = self._normalize_arg(key)
-            normalized_options[normalized_key] = str(value) if value else value
+            if isinstance(value, (list, tuple)):
+                for optval in value:
+                    yield (normalized_key, optval)
 
-        return normalized_options
+            yield (normalized_key, str(value) if value else value)
+
 
     def _normalize_arg(self, arg):
         return arg.lower()

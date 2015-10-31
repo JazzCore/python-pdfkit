@@ -42,11 +42,16 @@ class TestPDFKitInitialization(unittest.TestCase):
 
     def test_options_parsing(self):
         r = pdfkit.PDFKit('html', 'string', options={'page-size': 'Letter'})
-        self.assertTrue(r.options['--page-size'])
+        test_command = r.command('test')
+        idx = test_command.index('--page-size')  # Raise exception in case of not found
+        self.assertTrue(test_command[idx+1] == 'Letter')
 
     def test_options_parsing_with_dashes(self):
         r = pdfkit.PDFKit('html', 'string', options={'--page-size': 'Letter'})
-        self.assertTrue(r.options['--page-size'])
+        
+        test_command = r.command('test')
+        idx = test_command.index('--page-size')  # Raise exception in case of not found
+        self.assertTrue(test_command[idx+1] == 'Letter')
 
     def test_custom_configuration(self):
         conf = pdfkit.configuration()
