@@ -67,7 +67,7 @@ If you wish to further process generated PDF, you can read it to a variable:
     # Use False instead of output path to save pdf to a variable
     pdf = pdfkit.from_url('http://google.com', False)
 
-You can specify all wkhtmltopdf `options <http://wkhtmltopdf.org/usage/wkhtmltopdf.txt>`_. You can drop '--' in option name. If option without value, use *None, False* or *''* for dict value:
+You can specify all wkhtmltopdf `options <http://wkhtmltopdf.org/usage/wkhtmltopdf.txt>`_. You can drop '--' in option name. If option without value, use *None, False* or *''* for dict value:. For repeatable options (incl. allow, cookies, custom-header, post, postfile, run-script, replace) you may use a list or a tuple. With option that need multiple values (e.g. --custom-header Authorization secret) we may use a 2-tuple.
 
 .. code-block:: python
 
@@ -78,6 +78,10 @@ You can specify all wkhtmltopdf `options <http://wkhtmltopdf.org/usage/wkhtmltop
 	    'margin-bottom': '0.75in',
 	    'margin-left': '0.75in',
 	    'encoding': "UTF-8",
+	    'cookies': [
+	    	('cookie-name1', 'cookie-value1'),
+	    	('cookie-name2', 'cookie-value2'),
+	    ],
 	    'no-outline': None
 	}
 

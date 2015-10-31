@@ -79,9 +79,6 @@ class TestPDFKitInitialization(unittest.TestCase):
         self.assertTrue(test_command[idx3 + 1] == 'test_cookie2')
         self.assertTrue(test_command[idx3 + 2] == 'cookie_value2')
 
-
-
-
     def test_custom_configuration(self):
         conf = pdfkit.configuration()
         self.assertEqual('pdfkit-', conf.meta_tag_prefix)
