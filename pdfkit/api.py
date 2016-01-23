@@ -4,7 +4,7 @@ from .pdfkit import PDFKit
 from .pdfkit import Configuration
 
 
-def from_url(url, output_path, options=None, toc=None, cover=None, configuration=None):
+def from_url(url, output_path, options=None, toc=None, cover=None, configuration=None, cookies=None):
     """
     Convert file of files from URLs to PDF document
 
@@ -19,7 +19,7 @@ def from_url(url, output_path, options=None, toc=None, cover=None, configuration
     """
 
     r = PDFKit(url, 'url', options=options, toc=toc, cover=cover,
-               configuration=configuration)
+               configuration=configuration, cookies=cookies)
 
     return r.to_pdf(output_path)
 
