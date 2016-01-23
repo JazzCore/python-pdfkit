@@ -32,7 +32,7 @@ class PDFKit(object):
             return self.msg
 
     def __init__(self, url_or_file, type_, options=None, toc=None, cover=None,
-                 css=None, configuration=None):
+                 css=None, configuration=None, cookies=None):
 
         self.source = Source(url_or_file, type_)
         self.configuration = (Configuration() if configuration is None
@@ -44,6 +44,8 @@ class PDFKit(object):
             self.options.update(self._find_options_in_meta(url_or_file))
         if options is not None: self.options.update(options)
         self.options = self._normalize_options(self.options)
+
+        self.cookies = cookies
 
         toc = {} if toc is None else toc
         self.toc = self._normalize_options(toc)
@@ -66,6 +68,8 @@ class PDFKit(object):
         if self.cover:
             args.append('cover')
             args.append(self.cover)
+        if self.cookies:
+            args += list(chain.from_iterable(('--cookie', cookie, self.cookies[cookie]) for cookie in self.cookies))
 
         # If the source is a string then we will pipe it into wkhtmltopdf
         # If the source is file-like then we will read from it and pipe it in
