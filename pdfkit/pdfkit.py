@@ -37,7 +37,10 @@ class PDFKit(object):
         self.source = Source(url_or_file, type_)
         self.configuration = (Configuration() if configuration is None
                               else configuration)
-        self.wkhtmltopdf = self.configuration.wkhtmltopdf.decode('utf-8')
+        try:
+            self.wkhtmltopdf = self.configuration.wkhtmltopdf.decode('utf-8')
+        except AttributeError:
+            self.wkhtmltopdf = self.configuration.wkhtmltopdf
 
         self.options = dict()
         if self.source.isString():
