@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-import subprocess
 import sys
+from errand_boy.transports.unixsocket import UNIXSocketTransport
+
+errand_boy_transport = UNIXSocketTransport()
 
 
 class Configuration(object):
@@ -10,12 +12,16 @@ class Configuration(object):
         self.wkhtmltopdf = wkhtmltopdf
 
         if not self.wkhtmltopdf:
-            if sys.platform == 'win32':
-                self.wkhtmltopdf = subprocess.Popen(
-                    ['where', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0].strip()
-            else:
-                self.wkhtmltopdf = subprocess.Popen(
-                    ['which', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0].strip()
+            with errand_boy_transport.get_session() as session:
+                subprocess = session.subprocess
+                if sys.platform == 'win32':
+                    stdout, _ = subprocess.Popen(
+                        ['where', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()
+                    self.wkhtmltopdf = stdout.strip()
+                else:
+                    stdout, _ = subprocess.Popen(
+                        ['which', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()
+                    self.wkhtmltopdf = stdout.strip()
 
         try:
             with open(self.wkhtmltopdf) as f:

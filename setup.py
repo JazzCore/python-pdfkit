@@ -33,6 +33,7 @@ setup(
     long_description=long_description(),
     download_url='https://github.com/JazzCore/python-pdfkit',
     license=pdfkit.__license__,
+    install_requires=['errand-boy'],
     tests_require=['pytest'],
     cmdclass = {'test': PyTest},
     packages=['pdfkit'],

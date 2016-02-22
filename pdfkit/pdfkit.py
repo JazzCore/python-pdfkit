@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 import re
-import subprocess
 import sys
 from .source import Source
 from .configuration import Configuration
 from itertools import chain
 import io
 import codecs
+from errand_boy.transports.unixsocket import UNIXSocketTransport
+
+
+errand_boy_transport = UNIXSocketTransport()
 
 
 class PDFKit(object):
@@ -89,22 +92,24 @@ class PDFKit(object):
     def to_pdf(self, path=None):
         args = self.command(path)
 
-        result = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE)
+        with errand_boy_transport.get_session() as session:
+            subprocess = session.subprocess
+            result = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE)
 
-        # If the source is a string then we will pipe it into wkhtmltopdf.
-        # If we want to add custom CSS to file then we read input file to
-        # string and prepend css to it and then pass it to stdin.
-        # This is a workaround for a bug in wkhtmltopdf (look closely in README)
-        if self.source.isString() or (self.source.isFile() and self.css):
-            input = self.source.to_s().encode('utf-8')
-        elif self.source.isFileObj():
-            input = self.source.source.read().encode('utf-8')
-        else:
-            input = None
-        stdout, stderr = result.communicate(input=input)
+            # If the source is a string then we will pipe it into wkhtmltopdf.
+            # If we want to add custom CSS to file then we read input file to
+            # string and prepend css to it and then pass it to stdin.
+            # This is a workaround for a bug in wkhtmltopdf (look closely in README)
+            if self.source.isString() or (self.source.isFile() and self.css):
+                input = self.source.to_s().encode('utf-8')
+            elif self.source.isFileObj():
+                input = self.source.source.read().encode('utf-8')
+            else:
+                input = None
+            stdout, stderr = result.communicate(input=input)
 
-        exit_code = result.returncode
+            exit_code = result.returncode
 
         if 'cannot connect to X server' in stderr.decode('utf-8'):
             raise IOError('%s\n'
