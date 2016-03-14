@@ -4,7 +4,7 @@ from .pdfkit import PDFKit
 from .pdfkit import Configuration
 
 
-def from_url(url, output_path, options=None, toc=None, cover=None, configuration=None):
+def from_url(url, output_path=None, options=None, toc=None, cover=None, configuration=None):
     """
     Convert file of files from URLs to PDF document
 
@@ -24,7 +24,7 @@ def from_url(url, output_path, options=None, toc=None, cover=None, configuration
     return r.to_pdf(output_path)
 
 
-def from_file(input, output_path, options=None, toc=None, cover=None, css=None,
+def from_file(input, output_path=None, options=None, toc=None, cover=None, css=None,
               configuration=None):
     """
     Convert HTML file or files to PDF document
@@ -46,7 +46,7 @@ def from_file(input, output_path, options=None, toc=None, cover=None, css=None,
     return r.to_pdf(output_path)
 
 
-def from_string(input, output_path, options=None, toc=None, cover=None, css=None,
+def from_string(input, output_path=None, options=None, toc=None, cover=None, css=None,
                 configuration=None):
     """
     Convert given string or strings to PDF document
