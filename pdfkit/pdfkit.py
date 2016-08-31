@@ -60,6 +60,23 @@ class PDFKit(object):
         args += list(chain.from_iterable(list(self.options.items())))
         args = [_f for _f in args if _f]
 
+        # Because certain flags require two separate arguments (e.g.
+        # ``--custom-header``), we need to flatten those arguments so that they
+        # are passed correctly to wkhtmltopdf
+        #
+        # .. seealso::
+        #
+        #   JazzCore/python-pdfkit#45
+        #   JazzCore/python-pdfkit#53
+        #
+        flat_args = []
+        for arg in args:
+            if isinstance(arg, basestring):
+                flat_args.append(arg)
+            else:
+                flat_args.extend(arg)
+        args = flat_args
+
         if self.toc:
             args.append('toc')
             args += list(chain.from_iterable(list(self.toc.items())))
@@ -156,7 +173,13 @@ class PDFKit(object):
                 normalized_key = '--%s' % self._normalize_arg(key)
             else:
                 normalized_key = self._normalize_arg(key)
-            normalized_options[normalized_key] = str(value) if value else value
+            if not isinstance(value, tuple):
+                normalized_options[normalized_key] = str(value) if value else value
+            else:
+                # Convert tuple values to list of strings to later be
+                # flattened in :func:`pdfkit.PDFKit.command`
+                normalized_options[normalized_key] = [str(v) if v else v for v
+                                                      in value]
 
         return normalized_options
 
