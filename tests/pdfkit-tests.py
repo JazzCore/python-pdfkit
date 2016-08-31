@@ -48,6 +48,19 @@ class TestPDFKitInitialization(unittest.TestCase):
         r = pdfkit.PDFKit('html', 'string', options={'--page-size': 'Letter'})
         self.assertTrue(r.options['--page-size'])
 
+    def test_options_parsing_with_tuple(self):
+        r = pdfkit.PDFKit('html', 'string', options={'--custom-header':
+                                                     ('Accept-Encoding',
+                                                      'gzip')})
+        self.assertTrue(r.options['--custom-header'])
+        r = pdfkit.PDFKit('html', 'string', options={'custom-header':
+                                                     ('Accept-Encoding',
+                                                      'gzip')})
+        self.assertTrue(r.options['--custom-header'])
+        self.assertTrue("--custom-header" in r.command())
+        self.assertTrue("Accept-Encoding" in r.command())
+        self.assertTrue("gzip" in r.command())
+
     def test_custom_configuration(self):
         conf = pdfkit.configuration()
         self.assertEqual('pdfkit-', conf.meta_tag_prefix)
