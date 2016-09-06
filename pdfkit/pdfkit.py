@@ -31,7 +31,7 @@ class PDFKit(object):
         def __str__(self):
             return self.msg
 
-    def __init__(self, url_or_file, type_, options=None, cover=None, toc=None,
+    def __init__(self, url_or_file, type_, options=None, toc=None, cover=None,
                  css=None, configuration=None):
 
         self.source = Source(url_or_file, type_)
@@ -45,9 +45,9 @@ class PDFKit(object):
         if options is not None: self.options.update(options)
         self.options = self._normalize_options(self.options)
 
-        self.cover = cover
         toc = {} if toc is None else toc
         self.toc = self._normalize_options(toc)
+        self.cover = cover
         self.css = css
         self.stylesheets = []
 
@@ -60,12 +60,12 @@ class PDFKit(object):
         args += list(chain.from_iterable(list(self.options.items())))
         args = [_f for _f in args if _f]
 
-        if self.cover:
-            args.append('cover')
-            args.append(self.cover)
         if self.toc:
             args.append('toc')
             args += list(chain.from_iterable(list(self.toc.items())))
+        if self.cover:
+            args.append('cover')
+            args.append(self.cover)
 
         # If the source is a string then we will pipe it into wkhtmltopdf
         # If the source is file-like then we will read from it and pipe it in
