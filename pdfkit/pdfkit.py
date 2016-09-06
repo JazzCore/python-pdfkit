@@ -32,7 +32,7 @@ class PDFKit(object):
             return self.msg
 
     def __init__(self, url_or_file, type_, options=None, toc=None, cover=None,
-                 css=None, configuration=None):
+                 css=None, configuration=None, cover_first=False):
 
         self.source = Source(url_or_file, type_)
         self.configuration = (Configuration() if configuration is None
@@ -48,6 +48,7 @@ class PDFKit(object):
         toc = {} if toc is None else toc
         self.toc = self._normalize_options(toc)
         self.cover = cover
+        self.cover_first = cover_first
         self.css = css
         self.stylesheets = []
 
@@ -60,10 +61,13 @@ class PDFKit(object):
         args += list(chain.from_iterable(list(self.options.items())))
         args = [_f for _f in args if _f]
 
+        if self.cover and self.cover_first:
+            args.append('cover')
+            args.append(self.cover)
         if self.toc:
             args.append('toc')
             args += list(chain.from_iterable(list(self.toc.items())))
-        if self.cover:
+        if self.cover and not self.cover_first:
             args.append('cover')
             args.append(self.cover)
 
