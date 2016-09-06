@@ -93,7 +93,7 @@ By default, PDFKit will show all ``wkhtmltopdf`` output. If you dont want it, yo
 
     pdfkit.from_url('google.com', 'out.pdf', options=options)
 
-Due to wkhtmltopdf command syntax, **TOC** and **Cover** options must be specified separately:
+Due to wkhtmltopdf command syntax, **TOC** and **Cover** options must be specified separately. If you need cover before TOC, use ``cover_first`` option:
 
 .. code-block:: python
 
@@ -104,6 +104,7 @@ Due to wkhtmltopdf command syntax, **TOC** and **Cover** options must be specifi
 	cover = 'cover.html'
 
 	pdfkit.from_file('file.html', options=options, toc=toc, cover=cover)
+	pdfkit.from_file('file.html', options=options, toc=toc, cover=cover, cover_first=True)
 
 You can specify external CSS files when converting files or strings using *css* option.
 
