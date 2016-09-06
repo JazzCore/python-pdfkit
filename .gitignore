@@ -1,2 +1,11 @@
 .idea
 *.pyc
+
+# Build
+.cache
+.eggs
+pdfkit.egg-info
+
+# Tests
+.tox
+.python-version
