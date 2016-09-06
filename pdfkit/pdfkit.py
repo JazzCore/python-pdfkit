@@ -7,6 +7,11 @@ from .configuration import Configuration
 from itertools import chain
 import io
 import codecs
+try:
+    # Python 2.x and 3.x support for checking string types
+    assert basestring
+except NameError:
+    basestring = str
 
 
 class PDFKit(object):
