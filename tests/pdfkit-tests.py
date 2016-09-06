@@ -42,11 +42,42 @@ class TestPDFKitInitialization(unittest.TestCase):
 
     def test_options_parsing(self):
         r = pdfkit.PDFKit('html', 'string', options={'page-size': 'Letter'})
-        self.assertTrue(r.options['--page-size'])
+        test_command = r.command('test')
+        idx = test_command.index('--page-size')  # Raise exception in case of not found
+        self.assertTrue(test_command[idx+1] == 'Letter')
 
     def test_options_parsing_with_dashes(self):
         r = pdfkit.PDFKit('html', 'string', options={'--page-size': 'Letter'})
-        self.assertTrue(r.options['--page-size'])
+
+        test_command = r.command('test')
+        idx = test_command.index('--page-size')  # Raise exception in case of not found
+        self.assertTrue(test_command[idx+1] == 'Letter')
+
+    def test_repeatable_options(self):
+        roptions={
+            '--page-size': 'Letter',
+            'cookies': [ 
+                ('test_cookie1','cookie_value1'),
+                ('test_cookie2','cookie_value2'), 
+            ]
+        }
+
+        r = pdfkit.PDFKit('html', 'string', options=roptions)
+
+        test_command = r.command('test')
+
+        idx1 = test_command.index('--page-size')  # Raise exception in case of not found
+        self.assertTrue(test_command[idx1 + 1] == 'Letter')
+
+        self.assertTrue(test_command.count('--cookies') == 2)
+
+        idx2 = test_command.index('--cookies')
+        self.assertTrue(test_command[idx2 + 1] == 'test_cookie1')
+        self.assertTrue(test_command[idx2 + 2] == 'cookie_value1')
+
+        idx3 = test_command.index('--cookies', idx2 + 2)
+        self.assertTrue(test_command[idx3 + 1] == 'test_cookie2')
+        self.assertTrue(test_command[idx3 + 2] == 'cookie_value2')
 
     def test_custom_configuration(self):
         conf = pdfkit.configuration()
