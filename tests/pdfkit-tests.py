@@ -192,6 +192,19 @@ class TestPDFKitCommandGeneration(unittest.TestCase):
         command = r.command()
         self.assertEqual(command[-7:], ['toc', '--xsl-style-sheet', 'test.xsl', 'cover', 'test.html', '-', '-'])
 
+    def test_cover_and_toc_cover_first(self):
+        options = {
+            'page-size': 'Letter',
+            'margin-top': '0.75in',
+            'margin-right': '0.75in',
+            'margin-bottom': '0.75in',
+            'margin-left': '0.75in',
+            'encoding': "UTF-8"
+        }
+        r = pdfkit.PDFKit('html', 'string', options=options, toc={'xsl-style-sheet': 'test.xsl'}, cover='test.html', cover_first=True)
+        command = r.command()
+        self.assertEqual(command[-7:], ['cover', 'test.html', 'toc', '--xsl-style-sheet', 'test.xsl', '-', '-'])
+
     def test_outline_options(self):
         options = {
             'outline': None,
