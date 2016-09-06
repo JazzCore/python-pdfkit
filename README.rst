@@ -147,7 +147,7 @@ Example - for when ``wkhtmltopdf`` is not on ``$PATH``:
 
 .. code-block:: python
 
-    config = pdfkit.configuration(wkhtmltopdf='/opt/bin/wkhtmltopdf'))
+    config = pdfkit.configuration(wkhtmltopdf='/opt/bin/wkhtmltopdf')
     pdfkit.from_string(html_string, output_file, configuration=config)
 
 
