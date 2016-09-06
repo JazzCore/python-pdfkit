@@ -53,8 +53,32 @@ class TestPDFKitInitialization(unittest.TestCase):
         idx = test_command.index('--page-size')  # Raise exception in case of not found
         self.assertTrue(test_command[idx+1] == 'Letter')
 
+    def test_options_parsing_with_tuple(self):
+        options = {
+            '--custom-header': [
+                ('Accept-Encoding','gzip')
+            ]
+        }
+        r = pdfkit.PDFKit('html', 'string', options=options)
+        command = r.command()
+        idx1 = command.index('--custom-header')  # Raise exception in case of not found
+        self.assertTrue(command[idx1 + 1] == 'Accept-Encoding')
+        self.assertTrue(command[idx1 + 2] == 'gzip')
+
+    def test_options_parsing_with_tuple_no_dashes(self):
+        options = {
+            'custom-header': [
+                ('Accept-Encoding','gzip')
+            ]
+        }
+        r = pdfkit.PDFKit('html', 'string', options=options)
+        command = r.command()
+        idx1 = command.index('--custom-header')  # Raise exception in case of not found
+        self.assertTrue(command[idx1 + 1] == 'Accept-Encoding')
+        self.assertTrue(command[idx1 + 2] == 'gzip')
+
     def test_repeatable_options(self):
-        roptions={
+        roptions = {
             '--page-size': 'Letter',
             'cookies': [ 
                 ('test_cookie1','cookie_value1'),
@@ -187,14 +211,18 @@ class TestPDFKitCommandGeneration(unittest.TestCase):
         }
         r = pdfkit.PDFKit('html', 'string', options=options, toc={'xsl-style-sheet': 'test.xsl'})
 
-        self.assertEqual(r.command()[1 + len(options) * 2], 'toc')
-        self.assertEqual(r.command()[1 + len(options) * 2 + 1], '--xsl-style-sheet')
+        command = r.command()
+
+        self.assertEqual(command[1 + len(options) * 2], 'toc')
+        self.assertEqual(command[1 + len(options) * 2 + 1], '--xsl-style-sheet')
 
     def test_cover_without_options(self):
         r = pdfkit.PDFKit('html', 'string', cover='test.html')
 
-        self.assertEqual(r.command()[1], 'cover')
-        self.assertEqual(r.command()[2], 'test.html')
+        command = r.command()
+
+        self.assertEqual(command[1], 'cover')
+        self.assertEqual(command[2], 'test.html')
 
     def test_cover_with_options(self):
         options = {
@@ -207,8 +235,10 @@ class TestPDFKitCommandGeneration(unittest.TestCase):
         }
         r = pdfkit.PDFKit('html', 'string', options=options, cover='test.html')
 
-        self.assertEqual(r.command()[1 + len(options) * 2], 'cover')
-        self.assertEqual(r.command()[1 + len(options) * 2 + 1], 'test.html')
+        command = r.command()
+
+        self.assertEqual(command[1 + len(options) * 2], 'cover')
+        self.assertEqual(command[1 + len(options) * 2 + 1], 'test.html')
 
     def test_cover_and_toc(self):
         options = {
