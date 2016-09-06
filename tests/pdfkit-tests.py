@@ -190,7 +190,7 @@ class TestPDFKitCommandGeneration(unittest.TestCase):
         }
         r = pdfkit.PDFKit('html', 'string', options=options, toc={'xsl-style-sheet': 'test.xsl'}, cover='test.html')
         command = r.command()
-        self.assertEqual(command[-7:], ['toc', '--xsl-style-sheet', 'test.xsl', 'cover', 'test.html', '-', '-'])
+        self.assertEqual(command[-7:], ['cover', 'test.html', 'toc', '--xsl-style-sheet', 'test.xsl', '-', '-'])
 
     def test_outline_options(self):
         options = {
