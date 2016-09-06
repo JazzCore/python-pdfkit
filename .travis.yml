@@ -1,9 +1,11 @@
 language: python
 python:
   - 2.7
-  - 3.2 
+  - 3.2
   - 3.3
+  - 3.4
+  - 3.5
 before_script: "./travis/before-script.sh"
-script: python setup.py test
+script: nosetests -w tests
 notifications:
   email: false
