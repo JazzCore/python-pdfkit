@@ -140,7 +140,8 @@ class PDFKit(object):
 
         exit_code = result.returncode
 
-        if 'cannot connect to X server' in stderr.decode('utf-8'):
+        if 'cannot connect to X server' in stderr.decode('utf-8') or \
+                'Could not connect to display' in stderr.decode('utf-8'):
             raise IOError('%s\n'
                           'You will need to run whktmltopdf within a "virtual" X server.\n'
                           'Go to the link above for more information\n'
