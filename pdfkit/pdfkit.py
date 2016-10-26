@@ -137,7 +137,7 @@ class PDFKit(object):
         else:
             input = None
         stdout, stderr = result.communicate(input=input)
-
+        stderr = stderr or stdout
         exit_code = result.returncode
 
         if 'cannot connect to X server' in stderr.decode('utf-8'):
@@ -169,10 +169,10 @@ class PDFKit(object):
                                       'Check whhtmltopdf output without \'quiet\' '
                                       'option' % ' '.join(args))
                     return True
-            except IOError:
+            except IOError,e:
                 raise IOError('Command failed: %s\n'
-                              'Check whhtmltopdf output without \'quiet\' option' %
-                              ' '.join(args))
+                              'Check whhtmltopdf output without \'quiet\' option\n'
+                              '%s ' %(' '.join(args)),e)
 
     def _normalize_options(self, options):
         """ Generator of 2-tuples (option-key, option-value).
