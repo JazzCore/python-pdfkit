@@ -1,5 +1,11 @@
 Changelog
 ---------
+* `0.6.0`
+    * Support repeatable options
+    * Support multiple values for some options
+    * Fix some corner cases when specific argument order is required
+    * Some Python 3+ compatibility fixes
+    * Update README
 * `0.5.0`
     * Allow passing multiple css files
     * Fix problems with external file encodings
