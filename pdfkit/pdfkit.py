@@ -145,8 +145,8 @@ class PDFKit(object):
 
         if 'cannot connect to X server' in stderr.decode('utf-8'):
             raise IOError('%s\n'
-                          'You will need to run whktmltopdf within a "virtual" X server.\n'
-                          'Go to the link above for more information\n'
+                          'You will need to run wkhtmltopdf within a "virtual" X server.\n'
+                          'Go to the link below for more information\n'
                           'https://github.com/JazzCore/python-pdfkit/wiki/Using-wkhtmltopdf-without-X-server' % stderr.decode('utf-8'))
 
         if 'Error' in stderr.decode('utf-8'):
