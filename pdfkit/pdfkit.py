@@ -107,7 +107,7 @@ class PDFKit(object):
         if self.source.isString() or self.source.isFileObj():
             yield '-'
         else:
-            if isinstance(self.source.source, str):
+            if isinstance(self.source.source, basestring):
                 yield self.source.to_s()
             else:
                 for s in self.source.source:
