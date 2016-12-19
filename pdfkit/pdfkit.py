@@ -139,29 +139,31 @@ class PDFKit(object):
             input = self.source.source.read().encode('utf-8')
         else:
             input = None
-        stdout, stderr = result.communicate(input=input)
+        stdout_data, stderr_data = result.communicate(input=input)
 
+        stderr = stderr_data.decode('utf-8')
         exit_code = result.returncode
 
-        if 'cannot connect to X server' in stderr.decode('utf-8'):
+        if 'cannot connect to X server' in stderr or \
+                'Could not connect to display' in stderr:
             raise IOError('%s\n'
                           'You will need to run whktmltopdf within a "virtual" X server.\n'
                           'Go to the link above for more information\n'
-                          'https://github.com/JazzCore/python-pdfkit/wiki/Using-wkhtmltopdf-without-X-server' % stderr.decode('utf-8'))
+                          'https://github.com/JazzCore/python-pdfkit/wiki/Using-wkhtmltopdf-without-X-server' % stderr)
 
-        if 'Error' in stderr.decode('utf-8'):
-            raise IOError('wkhtmltopdf reported an error:\n' + stderr.decode('utf-8'))
+        if 'Error' in stderr:
+            raise IOError('wkhtmltopdf reported an error:\n' + stderr)
 
         if exit_code != 0:
-            raise IOError("wkhtmltopdf exited with non-zero code {0}. error:\n{1}".format(exit_code, stderr.decode("utf-8")))
+            raise IOError("wkhtmltopdf exited with non-zero code {0}. error:\n{1}".format(exit_code, stderr_data.decode("utf-8")))
 
         # Since wkhtmltopdf sends its output to stderr we will capture it
         # and properly send to stdout
         if '--quiet' not in args:
-            sys.stdout.write(stderr.decode('utf-8'))
+            sys.stdout.write(stderr)
 
         if not path:
-            return stdout
+            return stdout_data
         else:
             try:
                 with codecs.open(path, encoding='utf-8') as f:
