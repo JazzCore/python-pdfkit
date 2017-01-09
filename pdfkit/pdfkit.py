@@ -4,7 +4,6 @@ import subprocess
 import sys
 from .source import Source
 from .configuration import Configuration
-from itertools import chain
 import io
 import codecs
 try:
@@ -141,24 +140,28 @@ class PDFKit(object):
             input = None
         stdout, stderr = result.communicate(input=input)
         stderr = stderr or stdout
+        try:
+            stderr = stderr.decode('utf-8')
+        except UnicodeDecodeError:
+            stderr = ''
         exit_code = result.returncode
 
-        if 'cannot connect to X server' in stderr.decode('utf-8'):
+        if 'cannot connect to X server' in stderr:
             raise IOError('%s\n'
                           'You will need to run wkhtmltopdf within a "virtual" X server.\n'
                           'Go to the link below for more information\n'
-                          'https://github.com/JazzCore/python-pdfkit/wiki/Using-wkhtmltopdf-without-X-server' % stderr.decode('utf-8'))
+                          'https://github.com/JazzCore/python-pdfkit/wiki/Using-wkhtmltopdf-without-X-server' % stderr)
 
-        if 'Error' in stderr.decode('utf-8'):
-            raise IOError('wkhtmltopdf reported an error:\n' + stderr.decode('utf-8'))
+        if 'Error' in stderr:
+            raise IOError('wkhtmltopdf reported an error:\n' + stderr)
 
         if exit_code != 0:
-            raise IOError("wkhtmltopdf exited with non-zero code {0}. error:\n{1}".format(exit_code, stderr.decode("utf-8")))
+            raise IOError("wkhtmltopdf exited with non-zero code {0}. error:\n{1}".format(exit_code, stderr))
 
         # Since wkhtmltopdf sends its output to stderr we will capture it
         # and properly send to stdout
         if '--quiet' not in args:
-            sys.stdout.write(stderr.decode('utf-8'))
+            sys.stdout.write(stderr)
 
         if not path:
             return stdout
@@ -184,18 +187,17 @@ class PDFKit(object):
         :param options: dict {option name: value}
 
         returns:
-          iterator (option-key, option-value) 
+          iterator (option-key, option-value)
           - option names lower cased and prepended with
           '--' if necessary. Non-empty values cast to str
         """
-        normalized_options = {}
 
         for key, value in list(options.items()):
             if not '--' in key:
                 normalized_key = '--%s' % self._normalize_arg(key)
             else:
                 normalized_key = self._normalize_arg(key)
-                
+
             if isinstance(value, (list, tuple)):
                 for optval in value:
                     yield (normalized_key, optval)
