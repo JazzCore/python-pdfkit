@@ -1,5 +1,7 @@
 Changelog
 ---------
+* `0.6.1`
+    * Fix regression on python 3+ when trying to decode pdf output
 * `0.6.0`
     * Support repeatable options
     * Support multiple values for some options
