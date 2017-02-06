@@ -152,11 +152,26 @@ class PDFKit(object):
                           'Go to the link below for more information\n'
                           'https://github.com/JazzCore/python-pdfkit/wiki/Using-wkhtmltopdf-without-X-server' % stderr)
 
-        if 'Error' in stderr:
-            raise IOError('wkhtmltopdf reported an error:\n' + stderr)
+        """
+        Exit Code   Explanation
+        0   All OK
+        1   PDF generated OK, but some request(s) did not return HTTP 200
+        2   Could not something something
+        X   Could not write PDF: File in use
+        Y   Could not write PDF: No write permission
+        Z   PDF generated OK, but some JavaScript requests(s) timeouted
+        A   Invalid arguments provided
+        B   Could not find input file(s)
+        C   Process timeout
+        """
+        valid_codes = [0, 1, 'Z']
+        
+        if exit_code not in valid_codes:
+            if 'Error' in stderr:
+                raise IOError('wkhtmltopdf reported an error:\n' + stderr)
 
-        if exit_code != 0:
-            raise IOError("wkhtmltopdf exited with non-zero code {0}. error:\n{1}".format(exit_code, stderr))
+            if exit_code != 0:
+                raise IOError("wkhtmltopdf exited with non-zero code {0}. error:\n{1}".format(exit_code, stderr))
 
         # Since wkhtmltopdf sends its output to stderr we will capture it
         # and properly send to stdout
