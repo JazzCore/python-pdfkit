@@ -163,7 +163,7 @@ class PDFKit(object):
         # Since wkhtmltopdf sends its output to stderr we will capture it
         # and properly send to stdout
         if '--quiet' not in args:
-            sys.stdout.write(stderr)
+            sys.stdout.write(stderr.decode('utf-8'))
 
         if not path:
             return stdout
