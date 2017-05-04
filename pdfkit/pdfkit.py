@@ -177,7 +177,7 @@ class PDFKit(object):
                                       'Check whhtmltopdf output without \'quiet\' '
                                       'option' % ' '.join(args))
                     return True
-            except IOError as e:
+            except (IOError, OSError) as e:
                 raise IOError('Command failed: %s\n'
                               'Check whhtmltopdf output without \'quiet\' option\n'
                               '%s ' %(' '.join(args)),e)
