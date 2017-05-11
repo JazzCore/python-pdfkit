@@ -20,7 +20,7 @@ class Configuration(object):
         try:
             with open(self.wkhtmltopdf) as f:
                 pass
-        except IOError:
+        except (IOError, FileNotFoundError):
             raise IOError('No wkhtmltopdf executable found: "%s"\n'
                           'If this file exists please check that this process can '
                           'read it. Otherwise please install wkhtmltopdf - '
