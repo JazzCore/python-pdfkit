@@ -402,7 +402,7 @@ class TestPDFKitGeneration(unittest.TestCase):
             r.to_pdf()
 
         raised_exception = cm.exception
-        self.assertRegexpMatches(str(raised_exception), '^wkhtmltopdf exited with non-zero code 1. error:\nUnknown long argument --bad-option\r?\n')
+        self.assertRegex(str(raised_exception), '^wkhtmltopdf exited with non-zero code 1. error:\nUnknown long argument --bad-option\r?\n')
 
 if __name__ == "__main__":
     unittest.main()
