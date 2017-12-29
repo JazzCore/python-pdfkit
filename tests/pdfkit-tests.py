@@ -6,6 +6,10 @@ import codecs
 import unittest
 
 
+if sys.version_info[0] == 2 and sys.version_info[1] == 7:
+    unittest.TestCase.assertRegex = unittest.TestCase.assertRegexpMatches
+
+
 #Prepend ../ to PYTHONPATH so that we can import PDFKIT form there.
 TESTS_ROOT = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.realpath(os.path.join(TESTS_ROOT, '..')))
@@ -80,9 +84,9 @@ class TestPDFKitInitialization(unittest.TestCase):
     def test_repeatable_options(self):
         roptions = {
             '--page-size': 'Letter',
-            'cookies': [ 
+            'cookies': [
                 ('test_cookie1','cookie_value1'),
-                ('test_cookie2','cookie_value2'), 
+                ('test_cookie2','cookie_value2'),
             ]
         }
 
