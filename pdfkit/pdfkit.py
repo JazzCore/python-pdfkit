@@ -180,7 +180,7 @@ class PDFKit(object):
             except (IOError, OSError) as e:
                 raise IOError('Command failed: %s\n'
                               'Check whhtmltopdf output without \'quiet\' option\n'
-                              '%s ' %(' '.join(args)),e)
+                              '%s ' % (' '.join(args), e))
 
     def _normalize_options(self, options):
         """ Generator of 2-tuples (option-key, option-value).
