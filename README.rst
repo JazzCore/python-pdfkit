@@ -90,7 +90,7 @@ You can specify all wkhtmltopdf `options <http://wkhtmltopdf.org/usage/wkhtmltop
 
 	pdfkit.from_url('http://google.com', 'out.pdf', options=options)
 
-By default, PDFKit will show all ``wkhtmltopdf`` output. If you dont want it, you need to pass ``quiet`` option:
+By default, PDFKit will show all ``wkhtmltopdf`` output. If you don't want it, you need to pass ``quiet`` option:
 
 .. code-block:: python
 
