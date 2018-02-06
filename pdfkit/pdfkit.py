@@ -2,6 +2,7 @@
 import re
 import subprocess
 import sys
+from collections import OrderedDict
 from .source import Source
 from .configuration import Configuration
 import io
@@ -46,7 +47,7 @@ class PDFKit(object):
         except AttributeError:
             self.wkhtmltopdf = self.configuration.wkhtmltopdf
 
-        self.options = dict()
+        self.options = OrderedDict()
         if self.source.isString():
             self.options.update(self._find_options_in_meta(url_or_file))
 
