@@ -144,10 +144,7 @@ class PDFKit(object):
 
         exit_code = result.returncode
         if exit_code != 0:
-            try:
-                stderr = stderr.decode('utf-8')
-            except UnicodeDecodeError:
-                stderr = ''
+            stderr = stderr.decode('utf-8', errors='replace')
 
             if 'cannot connect to X server' in stderr:
                 raise IOError('%s\n'
@@ -164,7 +161,7 @@ class PDFKit(object):
         # Since wkhtmltopdf sends its output to stderr we will capture it
         # and properly send to stdout
         if '--quiet' not in args:
-            sys.stdout.write(stderr.decode('utf-8'))
+            sys.stdout.write(stderr.decode('utf-8', errors='replace'))
 
         if not path:
             return stdout
