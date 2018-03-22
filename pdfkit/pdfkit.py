@@ -51,6 +51,8 @@ class PDFKit(object):
         if self.source.isString():
             self.options.update(self._find_options_in_meta(url_or_file))
 
+        self.environ = self.configuration.environ
+
         if options is not None: self.options.update(options)
 
         self.toc = {} if toc is None else toc
@@ -125,9 +127,9 @@ class PDFKit(object):
 
     def to_pdf(self, path=None):
         args = self.command(path)
-
+        
         result = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE)
+                                  stderr=subprocess.PIPE, env=self.environ)
 
         # If the source is a string then we will pipe it into wkhtmltopdf.
         # If we want to add custom CSS to file then we read input file to
