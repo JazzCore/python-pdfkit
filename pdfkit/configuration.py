@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+import os
 import subprocess
 import sys
 
 
 class Configuration(object):
-    def __init__(self, wkhtmltopdf='', meta_tag_prefix='pdfkit-'):
+    def __init__(self, wkhtmltopdf='', meta_tag_prefix='pdfkit-', environ=''):
         self.meta_tag_prefix = meta_tag_prefix
 
         self.wkhtmltopdf = wkhtmltopdf
@@ -25,3 +26,12 @@ class Configuration(object):
                           'If this file exists please check that this process can '
                           'read it. Otherwise please install wkhtmltopdf - '
                           'https://github.com/JazzCore/python-pdfkit/wiki/Installing-wkhtmltopdf' % self.wkhtmltopdf)
+
+        self.environ = environ
+
+        if not self.environ:
+            self.environ = os.environ
+
+        for key in self.environ.keys():
+            if not isinstance(self.environ[key], str):
+                self.environ[key] = str(self.environ[key])
