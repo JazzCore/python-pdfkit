@@ -125,6 +125,23 @@ class PDFKit(object):
     def command(self, path=None):
         return list(self._command(path))
 
+    @staticmethod
+    def handle_error(exit_code, stderr):
+        if exit_code == 0:
+            return
+
+        if 'cannot connect to X server' in stderr:
+            raise IOError('%s\n'
+                          'You will need to run wkhtmltopdf within a "virtual" X server.\n'
+                          'Go to the link below for more information\n'
+                          'https://github.com/JazzCore/python-pdfkit/wiki/Using-wkhtmltopdf-without-X-server' % stderr)
+
+        if 'Error' in stderr:
+            raise IOError('wkhtmltopdf reported an error:\n' + stderr)
+
+        error_msg = stderr or 'Unknown Error'
+        raise IOError("wkhtmltopdf exited with non-zero code {0}. error:\n{1}".format(exit_code, error_msg))
+
     def to_pdf(self, path=None):
         args = self.command(path)
 
@@ -151,19 +168,7 @@ class PDFKit(object):
         stderr = stderr or stdout
         stderr = stderr.decode('utf-8', errors='replace')
         exit_code = result.returncode
-
-        if exit_code != 0:
-            if 'cannot connect to X server' in stderr:
-                raise IOError('%s\n'
-                              'You will need to run wkhtmltopdf within a "virtual" X server.\n'
-                              'Go to the link below for more information\n'
-                              'https://github.com/JazzCore/python-pdfkit/wiki/Using-wkhtmltopdf-without-X-server' % stderr)
-
-            if 'Error' in stderr:
-                raise IOError('wkhtmltopdf reported an error:\n' + stderr)
-
-            error_msg = stderr or 'Unknown Error'
-            raise IOError("wkhtmltopdf exited with non-zero code {0}. error:\n{1}".format(exit_code, error_msg))
+        self.handle_error(exit_code, stderr)
 
         # Since wkhtmltopdf sends its output to stderr we will capture it
         # and properly send to stdout
