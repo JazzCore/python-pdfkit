@@ -130,6 +130,12 @@ class PDFKit(object):
         if exit_code == 0:
             return
 
+        # Sometimes wkhtmltopdf will exit with non-zero
+        # even if it finishes generation.
+        # If will display 'Done' in the second last line
+        if stderr.splitlines()[-2].strip() == 'Done':
+            return
+
         if 'cannot connect to X server' in stderr:
             raise IOError('%s\n'
                           'You will need to run wkhtmltopdf within a "virtual" X server.\n'
