@@ -125,11 +125,39 @@ class PDFKit(object):
     def command(self, path=None):
         return list(self._command(path))
 
+    @staticmethod
+    def handle_error(exit_code, stderr):
+        if exit_code == 0:
+            return
+
+        # Sometimes wkhtmltopdf will exit with non-zero
+        # even if it finishes generation.
+        # If will display 'Done' in the second last line
+        if stderr.splitlines()[-2].strip() == 'Done':
+            return
+
+        if 'cannot connect to X server' in stderr:
+            raise IOError('%s\n'
+                          'You will need to run wkhtmltopdf within a "virtual" X server.\n'
+                          'Go to the link below for more information\n'
+                          'https://github.com/JazzCore/python-pdfkit/wiki/Using-wkhtmltopdf-without-X-server' % stderr)
+
+        if 'Error' in stderr:
+            raise IOError('wkhtmltopdf reported an error:\n' + stderr)
+
+        error_msg = stderr or 'Unknown Error'
+        raise IOError("wkhtmltopdf exited with non-zero code {0}. error:\n{1}".format(exit_code, error_msg))
+
     def to_pdf(self, path=None):
         args = self.command(path)
-        
-        result = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE, env=self.environ)
+
+        result = subprocess.Popen(
+            args,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env=self.environ
+        )
 
         # If the source is a string then we will pipe it into wkhtmltopdf.
         # If we want to add custom CSS to file then we read input file to
@@ -141,46 +169,34 @@ class PDFKit(object):
             input = self.source.source.read().encode('utf-8')
         else:
             input = None
+
         stdout, stderr = result.communicate(input=input)
         stderr = stderr or stdout
-
+        stderr = stderr.decode('utf-8', errors='replace')
         exit_code = result.returncode
-        if exit_code != 0:
-            stderr = stderr.decode('utf-8', errors='replace')
-
-            if 'cannot connect to X server' in stderr:
-                raise IOError('%s\n'
-                            'You will need to run wkhtmltopdf within a "virtual" X server.\n'
-                            'Go to the link below for more information\n'
-                            'https://github.com/JazzCore/python-pdfkit/wiki/Using-wkhtmltopdf-without-X-server' % stderr)
-
-            if 'Error' in stderr:
-                raise IOError('wkhtmltopdf reported an error:\n' + stderr)
-
-            error_msg = stderr or 'Unknown Error'
-            raise IOError("wkhtmltopdf exited with non-zero code {0}. error:\n{1}".format(exit_code, error_msg))
+        self.handle_error(exit_code, stderr)
 
         # Since wkhtmltopdf sends its output to stderr we will capture it
         # and properly send to stdout
         if '--quiet' not in args:
-            sys.stdout.write(stderr.decode('utf-8', errors='replace'))
+            sys.stdout.write(stderr)
 
         if not path:
             return stdout
-        else:
-            try:
-                with codecs.open(path, encoding='utf-8') as f:
-                    # read 4 bytes to get PDF signature '%PDF'
-                    text = f.read(4)
-                    if text == '':
-                        raise IOError('Command failed: %s\n'
-                                      'Check whhtmltopdf output without \'quiet\' '
-                                      'option' % ' '.join(args))
-                    return True
-            except (IOError, OSError) as e:
-                raise IOError('Command failed: %s\n'
-                              'Check whhtmltopdf output without \'quiet\' option\n'
-                              '%s ' % (' '.join(args), e))
+
+        try:
+            with codecs.open(path, encoding='utf-8') as f:
+                # read 4 bytes to get PDF signature '%PDF'
+                text = f.read(4)
+                if text == '':
+                    raise IOError('Command failed: %s\n'
+                                  'Check whhtmltopdf output without \'quiet\' '
+                                  'option' % ' '.join(args))
+                return True
+        except (IOError, OSError) as e:
+            raise IOError('Command failed: %s\n'
+                          'Check whhtmltopdf output without \'quiet\' option\n'
+                          '%s ' % (' '.join(args), e))
 
     def _normalize_options(self, options):
         """ Generator of 2-tuples (option-key, option-value).
@@ -205,7 +221,6 @@ class PDFKit(object):
                     yield (normalized_key, optval)
             else:
                 yield (normalized_key, unicode(value) if value else value)
-
 
     def _normalize_arg(self, arg):
         return arg.lower()
