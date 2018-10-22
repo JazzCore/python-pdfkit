@@ -10,8 +10,10 @@ import codecs
 try:
     # Python 2.x and 3.x support for checking string types
     assert basestring
+    assert unicode
 except NameError:
     basestring = str
+    unicode = str
 
 
 class PDFKit(object):
@@ -53,7 +55,8 @@ class PDFKit(object):
 
         self.environ = self.configuration.environ
 
-        if options is not None: self.options.update(options)
+        if options is not None:
+            self.options.update(options)
 
         self.toc = {} if toc is None else toc
         self.cover = cover
@@ -211,7 +214,7 @@ class PDFKit(object):
         """
 
         for key, value in list(options.items()):
-            if not '--' in key:
+            if '--' not in key:
                 normalized_key = '--%s' % self._normalize_arg(key)
             else:
                 normalized_key = self._normalize_arg(key)
