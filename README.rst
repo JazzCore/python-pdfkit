@@ -86,12 +86,12 @@ You can specify all wkhtmltopdf `options <http://wkhtmltopdf.org/usage/wkhtmltop
 	    'encoding': "UTF-8",
 	    'custom-header' : [
 	    	('Accept-Encoding', 'gzip')
-	    ]
+	    ],
 	    'cookie': [
 	    	('cookie-name1', 'cookie-value1'),
 	    	('cookie-name2', 'cookie-value2'),
 	    ],
-	    'no-outline': None
+	    'no-outline': None,
 	}
 
 	pdfkit.from_url('http://google.com', 'out.pdf', options=options)
