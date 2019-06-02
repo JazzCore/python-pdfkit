@@ -14,6 +14,9 @@ class Configuration(object):
             if sys.platform == 'win32':
                 self.wkhtmltopdf = subprocess.Popen(
                     ['where', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0].strip()
+                lines = self.wkhtmltopdf.splitlines()
+                if len(lines) > 0:
+                    self.wkhtmltopdf = lines[0].strip()                
             else:
                 self.wkhtmltopdf = subprocess.Popen(
                     ['which', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0].strip()
