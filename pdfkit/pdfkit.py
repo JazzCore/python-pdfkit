@@ -190,11 +190,11 @@ class PDFKit(object):
         thread.start()
         proc = q.get()
         try:
-          stdout, stderr, exit_code = q.get(True, timeout)
-          self.handle_error(exit_code, stderr)
+            stdout, stderr, exit_code = q.get(True, timeout)
+            self.handle_error(exit_code, stderr)
         except Queue.Empty as e:
-          proc.terminate()
-          raise IOError('Command exceeded timeout of {0} sec.'.format(timeout))
+            proc.terminate()
+            raise IOError('Command exceeded timeout of {0} sec.'.format(timeout))
 
         # Since wkhtmltopdf sends its output to stderr we will capture it
         # and properly send to stdout
