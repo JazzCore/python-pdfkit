@@ -2,6 +2,7 @@
 import re
 import subprocess
 import sys
+import threading
 from collections import OrderedDict
 from .source import Source
 from .configuration import Configuration
@@ -14,6 +15,11 @@ try:
 except NameError:
     basestring = str
     unicode = str
+
+if sys.version_info < (3,):
+  import Queue
+else:
+  import queue as Queue
 
 
 class PDFKit(object):
@@ -63,6 +69,7 @@ class PDFKit(object):
         self.cover_first = cover_first
         self.css = css
         self.stylesheets = []
+        self.proc = None
 
     def _genargs(self, opts):
         """
@@ -151,16 +158,8 @@ class PDFKit(object):
         error_msg = stderr or 'Unknown Error'
         raise IOError("wkhtmltopdf exited with non-zero code {0}. error:\n{1}".format(exit_code, error_msg))
 
-    def to_pdf(self, path=None):
+    def to_pdf(self, path=None, timeout=None):
         args = self.command(path)
-
-        result = subprocess.Popen(
-            args,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            env=self.environ
-        )
 
         # If the source is a string then we will pipe it into wkhtmltopdf.
         # If we want to add custom CSS to file then we read input file to
@@ -173,11 +172,31 @@ class PDFKit(object):
         else:
             input = None
 
-        stdout, stderr = result.communicate(input=input)
-        stderr = stderr or stdout
-        stderr = stderr.decode('utf-8', errors='replace')
-        exit_code = result.returncode
-        self.handle_error(exit_code, stderr)
+        def _target(_q):
+            proc = subprocess.Popen(
+                args,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                env=self.environ
+            )
+            _q.put(proc)
+            stdout, stderr = proc.communicate(input=input)
+            stderr = stderr or stdout
+            stderr = stderr.decode('utf-8', errors='replace')
+            exit_code = proc.returncode
+            _q.put((stdout, stderr, exit_code))
+
+        q = Queue.Queue()
+        thread = threading.Thread(target=_target, args=(q,))
+        thread.start()
+        proc = q.get()
+        try:
+          stdout, stderr, exit_code = q.get(True, timeout)
+          self.handle_error(exit_code, stderr)
+        except Queue.Empty as e:
+          proc.terminate()
+          raise IOError('Command exceeded timeout of {0} sec.'.format(timeout))
 
         # Since wkhtmltopdf sends its output to stderr we will capture it
         # and properly send to stdout

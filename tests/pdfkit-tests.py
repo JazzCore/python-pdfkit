@@ -408,5 +408,18 @@ class TestPDFKitGeneration(unittest.TestCase):
         raised_exception = cm.exception
         self.assertRegex(str(raised_exception), '^wkhtmltopdf exited with non-zero code 1. error:\nUnknown long argument --bad-option\r?\n')
 
+    def test_raise_error_if_timeout_exceeded(self):
+        r = pdfkit.PDFKit('<html><body>Hai!</body></html>', 'string',
+                          options={'bad-option': None})
+        timeout = 0.1
+        if sys.platform == 'win32':
+            fake_command = ['timeout', str(timeout + 5)]
+        else:
+            fake_command = ['sleep', str(timeout + 5)]
+        r.command = lambda _: fake_command
+        with self.assertRaises(IOError):
+            r.to_pdf(timeout=timeout)
+
+
 if __name__ == "__main__":
     unittest.main()
