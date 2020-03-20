@@ -418,8 +418,11 @@ class TestPDFKitGeneration(unittest.TestCase):
             fake_command = ['sleep', str(timeout + 5)]
 
         r.command = lambda _: fake_command
-        with self.assertRaises(IOError):
+        with self.assertRaises(IOError) as cm:
             r.to_pdf(timeout=timeout)
+
+        raised_exception = cm.exception
+        self.assertRegex(str(raised_exception), '^Command exceeded timeout.*')
 
 
 if __name__ == "__main__":
