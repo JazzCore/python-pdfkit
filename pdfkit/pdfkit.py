@@ -69,7 +69,6 @@ class PDFKit(object):
         self.cover_first = cover_first
         self.css = css
         self.stylesheets = []
-        self.proc = None
 
     def _genargs(self, opts):
         """
@@ -140,10 +139,9 @@ class PDFKit(object):
         if exit_code == 0:
             return
 
-        # Sometimes wkhtmltopdf will exit with non-zero
-        # even if it finishes generation.
-        # If will display 'Done' in the second last line
-        if stderr.splitlines()[-2].strip() == 'Done':
+        # Sometimes wkhtmltopdf will exit with non-zero even if it finishes
+        # generation. It will display 'Done' in the second last line.
+        if re.search('\s*Done\s*\n[^\n]*$', stderr):
             return
 
         if 'cannot connect to X server' in stderr:
