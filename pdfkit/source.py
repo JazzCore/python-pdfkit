@@ -8,7 +8,7 @@ class Source(object):
         self.source = url_or_file
         self.type = type_
 
-        if self.type is 'file':
+        if self.type == 'file':
             self.checkFiles()
 
     def isUrl(self):
