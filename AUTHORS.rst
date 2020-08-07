@@ -16,5 +16,5 @@ Contributors
 * `Pietro Delsante <https://github.com/pdelsante>`_
 * `Hung Le <https://github.com/lexhung>`_
 * `Zachary Kazanski <https://github.com/Kazanz>`_
-* `Fasih Ahmad Fakhri <https://github.com/fasihahmad>`_
+* `Fasih Ahmad Fakhri <https://github.com/fasih>`_
 * `Alan Hamlett <https://github.com/alanhamlett>`_
