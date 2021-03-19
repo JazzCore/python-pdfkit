@@ -13,10 +13,10 @@ class Configuration(object):
         if not self.wkhtmltopdf:
             if sys.platform == 'win32':
                 self.wkhtmltopdf = subprocess.Popen(
-                    ['where', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0].strip()
+                    ['where', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0].split()[0].strip()
             else:
                 self.wkhtmltopdf = subprocess.Popen(
-                    ['which', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0].strip()
+                    ['which', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0].split()[0].strip()
 
         try:
             with open(self.wkhtmltopdf) as f:
