@@ -107,6 +107,21 @@ class TestPDFKitInitialization(unittest.TestCase):
         self.assertTrue(test_command[idx3 + 1] == 'test_cookie2')
         self.assertTrue(test_command[idx3 + 2] == 'cookie_value2')
 
+    def test_empty_cookie_value(self):
+        roptions = {
+            '--page-size': 'Letter',
+            'cookies': [
+                ('test_cookie1',''),
+                ('test_cookie2','cookie_value2'),
+            ]
+        }
+
+        r = pdfkit.PDFKit('html', 'string', options=roptions)
+
+        test_command = r.command('test')
+
+        self.assertTrue(test_command[idx1 + 1] == 'Letter')
+
     def test_custom_configuration(self):
         conf = pdfkit.configuration()
         self.assertEqual('pdfkit-', conf.meta_tag_prefix)
