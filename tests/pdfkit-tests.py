@@ -309,6 +309,11 @@ class TestPDFKitGeneration(unittest.TestCase):
         pdf = r.to_pdf('out.pdf')
         self.assertTrue(pdf)
 
+    def test_pdf_generation_into_variable(self):
+        r = pdfkit.PDFKit('html', 'string', options={'page-size': 'Letter'})
+        pdf = r.to_pdf()
+        self.assertTrue(pdf[0:4].decode('ascii').startswith('%PDF'))
+
     def test_raise_error_with_invalid_url(self):
         r = pdfkit.PDFKit('wrongurl', 'url')
         with self.assertRaises(IOError):
