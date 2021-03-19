@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
 import io
+try:
+    # Python 2.x and 3.x support for checking string types
+    assert basestring
+    assert unicode
+except NameError:
+    basestring = str
+    unicode = str
+
 
 
 class Source(object):
@@ -38,4 +46,12 @@ class Source(object):
         return hasattr(self.source, 'read')
 
     def to_s(self):
-        return self.source
+        # String should be in unicode(python2)/str(python3) type since we will
+        # later encode it to utf-8 bytes array to pipe into subprocess
+        # With some charachters on python 2 it sets to str type (bytes) which is wrong
+        # and cant later encode properly, this is a workaround for this.
+        # See issue #42
+        if isinstance(self.source, unicode):
+            return self.source
+        else:
+            return unicode(self.source, 'utf-8')
