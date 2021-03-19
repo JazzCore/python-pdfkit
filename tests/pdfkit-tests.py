@@ -413,5 +413,12 @@ class TestPDFKitGeneration(unittest.TestCase):
         raised_exception = cm.exception
         self.assertRegex(str(raised_exception), '^wkhtmltopdf exited with non-zero code 1. error:\nUnknown long argument --bad-option\r?\n')
 
+    def test_issue_42_encode_file_with_unicode_char(self):
+        with open('fixtures/issue_42_bad_char_page.html', 'r') as f:
+            data = f.read()
+            r = pdfkit.PDFKit(data, 'string')
+            output = r.to_pdf()
+        self.assertEqual(output[:4].decode('utf-8'), '%PDF')
+
 if __name__ == "__main__":
     unittest.main()
