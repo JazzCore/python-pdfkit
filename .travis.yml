@@ -8,5 +8,6 @@ python:
   - 3.8
 before_script: "./travis/before-script.sh"
 script: nosetests -w tests
+dist: xenial
 notifications:
   email: false
