@@ -164,6 +164,16 @@ Example - for when ``wkhtmltopdf`` is not on ``$PATH``:
     config = pdfkit.configuration(wkhtmltopdf='/opt/bin/wkhtmltopdf')
     pdfkit.from_string(html_string, output_file, configuration=config)
 
+Also you can use ``configuration()`` call to check if wkhtmltopdf is present in ``$PATH``:
+
+.. code-block:: python
+
+	try:
+	  config = pdfkit.configuration()
+	  pdfkit.from_string(html_string, output_file)
+	except OSError:
+	  #not present in PATH
+
 
 Troubleshooting
 ---------------
