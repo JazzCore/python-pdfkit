@@ -2,6 +2,10 @@
 import os
 import subprocess
 import sys
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
 
 
 class Configuration(object):
@@ -10,22 +14,28 @@ class Configuration(object):
 
         self.wkhtmltopdf = wkhtmltopdf
 
-        if not self.wkhtmltopdf:
-            if sys.platform == 'win32':
-                self.wkhtmltopdf = subprocess.Popen(
-                    ['where.exe', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0].split()[0].strip()
-            else:
-                self.wkhtmltopdf = subprocess.Popen(
-                    ['which', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0].split()[0].strip()
-
         try:
+            if not self.wkhtmltopdf:
+                if sys.platform == 'win32':
+                    self.wkhtmltopdf = subprocess.Popen(
+                        ['where.exe', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0]
+                else:
+                    self.wkhtmltopdf = subprocess.Popen(
+                        ['which', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0]
+
+            lines = self.wkhtmltopdf.splitlines()
+            if len(lines) > 0:
+                self.wkhtmltopdf = lines[0].strip()
+
             with open(self.wkhtmltopdf) as f:
                 pass
-        except IOError:
+        except (IOError, FileNotFoundError) as e:
             raise IOError('No wkhtmltopdf executable found: "%s"\n'
                           'If this file exists please check that this process can '
-                          'read it. Otherwise please install wkhtmltopdf - '
+                          'read it or you can pass path to it manually in method call, '
+                          'check README. Otherwise please install wkhtmltopdf - '
                           'https://github.com/JazzCore/python-pdfkit/wiki/Installing-wkhtmltopdf' % self.wkhtmltopdf)
+
 
         self.environ = environ
 
