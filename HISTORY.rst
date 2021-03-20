@@ -1,5 +1,13 @@
 Changelog
 ---------
+* `1.0.0`
+    * By default PDFKit now passes "quiet" option to wkhtmltopdf. Now if you need to get output you should pass "verbose=True" to API calls
+    * Fix different issues with searching for wkhtmltopdf binary
+    * Update error handling for wkhtmltopdf
+    * Fix different issues with options handling
+    * Better handling of unicode input
+    * Actualize Travis build scripts
+    * Update README
 * `0.6.1`
     * Fix regression on python 3+ when trying to decode pdf output
 * `0.6.0`
