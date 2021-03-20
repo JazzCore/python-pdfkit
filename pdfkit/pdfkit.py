@@ -154,13 +154,28 @@ class PDFKit(object):
     def to_pdf(self, path=None):
         args = self.command(path)
 
-        result = subprocess.Popen(
-            args,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            env=self.environ
-        )
+        if sys.platform == 'win32':
+            #hide cmd window
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = subprocess.SW_HIDE
+
+            result = subprocess.Popen(
+                args,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                env=self.environ,
+                startupinfo=startupinfo
+            )
+        else:
+            result = subprocess.Popen(
+                args,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                env=self.environ
+            )
 
         # If the source is a string then we will pipe it into wkhtmltopdf.
         # If we want to add custom CSS to file then we read input file to

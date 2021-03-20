@@ -17,8 +17,13 @@ class Configuration(object):
         try:
             if not self.wkhtmltopdf:
                 if sys.platform == 'win32':
+                    #hide cmd window
+                    startupinfo = subprocess.STARTUPINFO()
+                    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                    startupinfo.wShowWindow = subprocess.SW_HIDE
+
                     self.wkhtmltopdf = subprocess.Popen(
-                        ['where.exe', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0]
+                        ['where.exe', 'wkhtmltopdf'], stdout=subprocess.PIPE, startupinfo=startupinfo).communicate()[0]
                 else:
                     self.wkhtmltopdf = subprocess.Popen(
                         ['which', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0]
