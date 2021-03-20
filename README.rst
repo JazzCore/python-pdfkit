@@ -178,13 +178,13 @@ Troubleshooting
 Debugging issues with PDF generation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you struggling to generate correct PDF firstly you should check wkhtmltopdf output for some clues, you can get it by passing ``verbose=True`` to API calls:
+If you struggling to generate correct PDF firstly you should check ``wkhtmltopdf`` output for some clues, you can get it by passing ``verbose=True`` to API calls:
 
 .. code-block:: python
 
 	pdfkit.from_url('http://google.com', 'out.pdf', verbose=True)
 
-If you are getting strage results in PDF or some option looks like its ignored you should try to run ``wkhtmltopdf`` directly to see if it produces the same result. You can get CLI command by creating ``pdfkit.PDFKit`` class directly and then calling its ``command()`` method:
+If you are getting strange results in PDF or some option looks like its ignored you should try to run ``wkhtmltopdf`` directly to see if it produces the same result. You can get CLI command by creating ``pdfkit.PDFKit`` class directly and then calling its ``command()`` method:
 
 .. code-block:: python
 
