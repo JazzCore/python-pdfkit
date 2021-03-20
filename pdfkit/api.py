@@ -5,7 +5,7 @@ from .pdfkit import Configuration
 
 
 def from_url(url, output_path=None, options=None, toc=None, cover=None,
-             configuration=None, cover_first=False):
+             configuration=None, cover_first=False, verbose=False):
     """
     Convert file of files from URLs to PDF document
 
@@ -16,18 +16,19 @@ def from_url(url, output_path=None, options=None, toc=None, cover=None,
     :param cover: (optional) string with url/filename with a cover html page
     :param configuration: (optional) instance of pdfkit.configuration.Configuration()
     :param cover_first: (optional) if True, cover always precedes TOC
+    :param verbose: (optional) By default '--quiet' is passed to all calls, set this to False to get wkhtmltopdf output to stdout.
 
     Returns: True on success
     """
 
     r = PDFKit(url, 'url', options=options, toc=toc, cover=cover,
-               configuration=configuration, cover_first=cover_first)
+               configuration=configuration, cover_first=cover_first, verbose=verbose)
 
     return r.to_pdf(output_path)
 
 
 def from_file(input, output_path=None, options=None, toc=None, cover=None, css=None,
-              configuration=None, cover_first=False):
+              configuration=None, cover_first=False, verbose=False):
     """
     Convert HTML file or files to PDF document
 
@@ -39,18 +40,19 @@ def from_file(input, output_path=None, options=None, toc=None, cover=None, css=N
     :param css: (optional) string with path to css file which will be added to a single input file
     :param configuration: (optional) instance of pdfkit.configuration.Configuration()
     :param cover_first: (optional) if True, cover always precedes TOC
+    :param verbose: (optional) By default '--quiet' is passed to all calls, set this to False to get wkhtmltopdf output to stdout.
 
     Returns: True on success
     """
 
     r = PDFKit(input, 'file', options=options, toc=toc, cover=cover, css=css,
-               configuration=configuration, cover_first=cover_first)
+               configuration=configuration, cover_first=cover_first, verbose=verbose)
 
     return r.to_pdf(output_path)
 
 
 def from_string(input, output_path=None, options=None, toc=None, cover=None, css=None,
-                configuration=None, cover_first=False):
+                configuration=None, cover_first=False, verbose=False):
     """
     Convert given string or strings to PDF document
 
@@ -62,12 +64,13 @@ def from_string(input, output_path=None, options=None, toc=None, cover=None, css
     :param css: (optional) string with path to css file which will be added to a input string
     :param configuration: (optional) instance of pdfkit.configuration.Configuration()
     :param cover_first: (optional) if True, cover always precedes TOC
+    :param verbose: (optional) By default '--quiet' is passed to all calls, set this to False to get wkhtmltopdf output to stdout.
 
     Returns: True on success
     """
 
     r = PDFKit(input, 'string', options=options, toc=toc, cover=cover, css=css,
-               configuration=configuration, cover_first=cover_first)
+               configuration=configuration, cover_first=cover_first, verbose=verbose)
 
     return r.to_pdf(output_path)
 

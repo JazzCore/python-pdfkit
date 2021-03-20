@@ -216,8 +216,9 @@ class TestPDFKitCommandGeneration(unittest.TestCase):
 
     def test_toc_handling_without_options(self):
         r = pdfkit.PDFKit('hmtl', 'string', toc={'xsl-style-sheet': 'test.xsl'})
-        self.assertEqual(r.command()[1], 'toc')
-        self.assertEqual(r.command()[2], '--xsl-style-sheet')
+        self.assertEqual(r.command()[1], '--quiet')
+        self.assertEqual(r.command()[2], 'toc')
+        self.assertEqual(r.command()[3], '--xsl-style-sheet')
 
     def test_toc_with_options(self):
         options = {
@@ -232,16 +233,18 @@ class TestPDFKitCommandGeneration(unittest.TestCase):
 
         command = r.command()
 
-        self.assertEqual(command[1 + len(options) * 2], 'toc')
-        self.assertEqual(command[1 + len(options) * 2 + 1], '--xsl-style-sheet')
+        self.assertEqual(command[1 + len(options) * 2], '--quiet')
+        self.assertEqual(command[2 + len(options) * 2], 'toc')
+        self.assertEqual(command[2 + len(options) * 2 + 1], '--xsl-style-sheet')
 
     def test_cover_without_options(self):
         r = pdfkit.PDFKit('html', 'string', cover='test.html')
 
         command = r.command()
 
-        self.assertEqual(command[1], 'cover')
-        self.assertEqual(command[2], 'test.html')
+        self.assertEqual(command[1], '--quiet')
+        self.assertEqual(command[2], 'cover')
+        self.assertEqual(command[3], 'test.html')
 
     def test_cover_with_options(self):
         options = {
@@ -256,8 +259,9 @@ class TestPDFKitCommandGeneration(unittest.TestCase):
 
         command = r.command()
 
-        self.assertEqual(command[1 + len(options) * 2], 'cover')
-        self.assertEqual(command[1 + len(options) * 2 + 1], 'test.html')
+        self.assertEqual(command[1 + len(options) * 2], '--quiet')
+        self.assertEqual(command[2 + len(options) * 2], 'cover')
+        self.assertEqual(command[2 + len(options) * 2 + 1], 'test.html')
 
     def test_cover_and_toc(self):
         options = {
@@ -304,9 +308,24 @@ class TestPDFKitCommandGeneration(unittest.TestCase):
             'quiet': False
         }
 
-        r = pdfkit.PDFKit('html', 'string', options=options)
+        r = pdfkit.PDFKit('html', 'string', options=options, verbose=True)
         cmd = r.command()
         self.assertEqual(len(cmd), 6)
+
+    def test_verbose_option(self):
+        options = {
+            'outline': '',
+            'footer-line': None,
+            'quiet': True
+        }
+
+        r = pdfkit.PDFKit('html', 'string')
+        cmd = r.command()
+        self.assertTrue('--quiet' in cmd)
+
+        r = pdfkit.PDFKit('html', 'string', options=options)
+        cmd = r.command()
+        self.assertTrue('--quiet' in cmd)
 
 
 class TestPDFKitGeneration(unittest.TestCase):
@@ -433,6 +452,43 @@ class TestPDFKitGeneration(unittest.TestCase):
             data = f.read()
             r = pdfkit.PDFKit(data, 'string')
             output = r.to_pdf()
+        self.assertEqual(output[:4].decode('utf-8'), '%PDF')
+
+    def test_issue_140_empty_cookie_value(self):
+        roptions_bad = {
+            '--page-size': 'Letter',
+            'cookie': [
+                ('test_cookie1',''),
+                ('test_cookie2','cookie_value2'),
+            ]
+        }
+
+        roptions_good = {
+            '--page-size': 'Letter',
+            'cookie': [
+                ('test_cookie1','""'),
+                ('test_cookie2','cookie_value2'),
+            ]
+        }
+
+        r1 = pdfkit.PDFKit('html', 'string', options=roptions_bad)
+
+        self.assertRaises(AssertionError, r1.to_pdf)
+
+        r2 = pdfkit.PDFKit('html', 'string', options=roptions_good)
+        output2 = r2.to_pdf()
+
+        self.assertEqual(output2[:4].decode('utf-8'), '%PDF')
+
+    def test_issue_169_quiet_boolean_True(self):
+        options = {
+            'outline': '',
+            'footer-line': None,
+            'quiet': True
+        }
+
+        r = pdfkit.PDFKit('html', 'string', options=options)
+        output = r.to_pdf()
         self.assertEqual(output[:4].decode('utf-8'), '%PDF')
 
 if __name__ == "__main__":

@@ -88,6 +88,7 @@ You can specify all wkhtmltopdf `options <http://wkhtmltopdf.org/usage/wkhtmltop
 	    	('Accept-Encoding', 'gzip')
 	    ],
 	    'cookie': [
+	    	('cookie-empty-value', '""')
 	    	('cookie-name1', 'cookie-value1'),
 	    	('cookie-name2', 'cookie-value2'),
 	    ],
@@ -96,15 +97,11 @@ You can specify all wkhtmltopdf `options <http://wkhtmltopdf.org/usage/wkhtmltop
 
 	pdfkit.from_url('http://google.com', 'out.pdf', options=options)
 
-By default, PDFKit will show all ``wkhtmltopdf`` output. If you don't want it, you need to pass ``quiet`` option:
+By default, PDFKit will run ``wkhtmltopdf`` with ``quiet`` option turned on, since in most cases output is not needed and can cause excessive memory usage and corrupted results. If need to get ``wkhtmltopdf`` output you should pass ``verbose=True`` to API calls:
 
 .. code-block:: python
 
-    options = {
-        'quiet': ''
-        }
-
-    pdfkit.from_url('google.com', 'out.pdf', options=options)
+    pdfkit.from_url('google.com', 'out.pdf', verbose=True)
 
 Due to wkhtmltopdf command syntax, **TOC** and **Cover** options must be specified separately. If you need cover before TOC, use ``cover_first`` option:
 
@@ -177,6 +174,29 @@ Also you can use ``configuration()`` call to check if wkhtmltopdf is present in 
 
 Troubleshooting
 ---------------
+
+Debugging issues with PDF generation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you struggling to generate correct PDF firstly you should check ``wkhtmltopdf`` output for some clues, you can get it by passing ``verbose=True`` to API calls:
+
+.. code-block:: python
+
+	pdfkit.from_url('http://google.com', 'out.pdf', verbose=True)
+
+If you are getting strange results in PDF or some option looks like its ignored you should try to run ``wkhtmltopdf`` directly to see if it produces the same result. You can get CLI command by creating ``pdfkit.PDFKit`` class directly and then calling its ``command()`` method:
+
+.. code-block:: python
+
+	import pdfkit
+
+	r = pdfkit.PDFKit('html', 'string', verbose=True)
+	print(' '.join(r.command()))
+	# try running wkhtmltopdf to create PDF
+	output = r.to_pdf()
+
+Common errors:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - ``IOError: 'No wkhtmltopdf executable found'``:
 

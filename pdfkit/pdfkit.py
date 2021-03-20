@@ -9,8 +9,8 @@ import io
 import codecs
 try:
     # Python 2.x and 3.x support for checking string types
-    assert basestring
-    assert unicode
+    basestring
+    unicode
 except NameError:
     basestring = str
     unicode = str
@@ -39,7 +39,7 @@ class PDFKit(object):
             return self.msg
 
     def __init__(self, url_or_file, type_, options=None, toc=None, cover=None,
-                 css=None, configuration=None, cover_first=False):
+                 css=None, configuration=None, cover_first=False, verbose=False):
 
         self.source = Source(url_or_file, type_)
         self.configuration = (Configuration() if configuration is None
@@ -61,6 +61,7 @@ class PDFKit(object):
         self.toc = {} if toc is None else toc
         self.cover = cover
         self.cover_first = cover_first
+        self.verbose = verbose
         self.css = css
         self.stylesheets = []
 
@@ -88,6 +89,9 @@ class PDFKit(object):
             self._prepend_css(self.css)
 
         yield self.wkhtmltopdf
+
+        if not self.verbose:
+            self.options.update({'--quiet': ''})
 
         for argpart in self._genargs(self.options):
             if argpart:
@@ -133,10 +137,12 @@ class PDFKit(object):
         if exit_code == 0:
             return
 
+        stderr_lines = stderr.splitlines()
+
         # Sometimes wkhtmltopdf will exit with non-zero
         # even if it finishes generation.
         # If will display 'Done' in the second last line
-        if stderr.splitlines()[-2].strip() == 'Done':
+        if len(stderr_lines) > 1 and stderr.splitlines()[-2].strip() == 'Done':
             return
 
         if 'cannot connect to X server' in stderr:
@@ -238,7 +244,8 @@ class PDFKit(object):
                 for optval in value:
                     yield (normalized_key, optval)
             else:
-                yield (normalized_key, unicode(value) if value else value)
+                normalized_value = '' if isinstance(value,bool) else value
+                yield (normalized_key, unicode(normalized_value) if value else value)
 
     def _normalize_arg(self, arg):
         return arg.lower()
