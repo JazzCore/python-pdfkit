@@ -107,21 +107,6 @@ class TestPDFKitInitialization(unittest.TestCase):
         self.assertTrue(test_command[idx3 + 1] == 'test_cookie2')
         self.assertTrue(test_command[idx3 + 2] == 'cookie_value2')
 
-    def test_empty_cookie_value(self):
-        roptions = {
-            '--page-size': 'Letter',
-            'cookies': [
-                ('test_cookie1',''),
-                ('test_cookie2','cookie_value2'),
-            ]
-        }
-
-        r = pdfkit.PDFKit('html', 'string', options=roptions)
-
-        test_command = r.command('test')
-
-        self.assertTrue(test_command[idx1 + 1] == 'Letter')
-
     def test_custom_configuration(self):
         conf = pdfkit.configuration()
         self.assertEqual('pdfkit-', conf.meta_tag_prefix)
@@ -434,6 +419,32 @@ class TestPDFKitGeneration(unittest.TestCase):
             r = pdfkit.PDFKit(data, 'string')
             output = r.to_pdf()
         self.assertEqual(output[:4].decode('utf-8'), '%PDF')
+
+    def test_issue_140_empty_cookie_value(self):
+        roptions_bad = {
+            '--page-size': 'Letter',
+            'cookie': [
+                ('test_cookie1',''),
+                ('test_cookie2','cookie_value2'),
+            ]
+        }
+
+        roptions_good = {
+            '--page-size': 'Letter',
+            'cookie': [
+                ('test_cookie1','""'),
+                ('test_cookie2','cookie_value2'),
+            ]
+        }
+
+        r1 = pdfkit.PDFKit('html', 'string', options=roptions_bad)
+
+        self.assertRaises(AssertionError, r1.to_pdf)
+
+        r2 = pdfkit.PDFKit('html', 'string', options=roptions_good)
+        output2 = r2.to_pdf()
+
+        self.assertEqual(output2[:4].decode('utf-8'), '%PDF')
 
 if __name__ == "__main__":
     unittest.main()
