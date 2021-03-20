@@ -9,8 +9,8 @@ import io
 import codecs
 try:
     # Python 2.x and 3.x support for checking string types
-    assert basestring
-    assert unicode
+    basestring
+    unicode
 except NameError:
     basestring = str
     unicode = str
