@@ -238,7 +238,8 @@ class PDFKit(object):
                 for optval in value:
                     yield (normalized_key, optval)
             else:
-                yield (normalized_key, unicode(value) if value else value)
+                normalized_value = '' if isinstance(value,bool) else value
+                yield (normalized_key, unicode(normalized_value) if value else value)
 
     def _normalize_arg(self, arg):
         return arg.lower()

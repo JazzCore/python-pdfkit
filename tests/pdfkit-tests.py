@@ -446,5 +446,16 @@ class TestPDFKitGeneration(unittest.TestCase):
 
         self.assertEqual(output2[:4].decode('utf-8'), '%PDF')
 
+    def test_issue_169_quiet_boolean_True(self):
+        options = {
+            'outline': '',
+            'footer-line': None,
+            'quiet': True
+        }
+
+        r = pdfkit.PDFKit('html', 'string', options=options)
+        output = r.to_pdf()
+        self.assertEqual(output[:4].decode('utf-8'), '%PDF')
+
 if __name__ == "__main__":
     unittest.main()
