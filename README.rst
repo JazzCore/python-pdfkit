@@ -88,7 +88,7 @@ You can specify all wkhtmltopdf `options <http://wkhtmltopdf.org/usage/wkhtmltop
 	    	('Accept-Encoding', 'gzip')
 	    ],
 	    'cookie': [
-	    	('cookie-empty-value', '""')
+	    	('cookie-empty-value', '""'),
 	    	('cookie-name1', 'cookie-value1'),
 	    	('cookie-name2', 'cookie-value2'),
 	    ],
