@@ -34,6 +34,13 @@ Installation
 .. code-block:: bash
 
 	$ brew install homebrew/cask/wkhtmltopdf
+	
+	
+* Windows:
+
+.. code-block:: bash
+
+	$ choco install wkhtmltopdf
 
 **Warning!** Version in debian/ubuntu repos have reduced functionality (because it compiled without the wkhtmltopdf QT patches), such as adding outlines, headers, footers, TOC etc. To use this options you should install static binary from `wkhtmltopdf <http://wkhtmltopdf.org/>`_ site or you can use `this script <https://github.com/JazzCore/python-pdfkit/blob/master/travis/before-script.sh>`_.
 
