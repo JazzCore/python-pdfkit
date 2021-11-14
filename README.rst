@@ -2,8 +2,8 @@ Python-PDFKit: HTML to PDF wrapper
 ==================================
 
 
-.. image:: https://travis-ci.org/JazzCore/python-pdfkit.png?branch=master
-        :target: https://travis-ci.org/JazzCore/python-pdfkit
+.. image:: https://github.com/JazzCore/python-pdfkit/actions/workflows/main.yaml/badge.svg?branch=master
+        :target: https://github.com/JazzCore/python-pdfkit/actions/workflows/main.yaml
 
 .. image:: https://badge.fury.io/py/pdfkit.svg
         :target: http://badge.fury.io/py/pdfkit
