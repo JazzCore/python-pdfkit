@@ -1,4 +1,3 @@
-import codecs
 from distutils.core import setup
 from setuptools.command.test import test as TestCommand
 import re
@@ -20,7 +19,7 @@ class PyTest(TestCommand):
 
 def long_description():
     """Pre-process the README so that PyPi can render it properly."""
-    with codecs.open('README.rst', encoding='utf8') as f:
+    with open('README.rst') as f:
         rst = f.read()
     code_block = '(:\n\n)?\.\. code-block::.*'
     rst = re.sub(code_block, '::', rst)
