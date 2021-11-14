@@ -195,7 +195,7 @@ class PDFKit(object):
             input = None
 
         stdout, stderr = result.communicate(input=input)
-        stderr = stderr or stdout
+        stderr = stderr or stdout or b""
         stderr = stderr.decode('utf-8', errors='replace')
         exit_code = result.returncode
         self.handle_error(exit_code, stderr)
