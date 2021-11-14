@@ -1,4 +1,4 @@
-name: Run Tests
+name: Build
 
 on: [push, pull_request]
 
@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          ./travis/before-script.sh
+          ./ci/before-script.sh
           python -m pip install --upgrade pip
           pip install nose
 
