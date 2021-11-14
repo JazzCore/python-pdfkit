@@ -6,7 +6,7 @@ Changelog
     * Update error handling for wkhtmltopdf
     * Fix different issues with options handling
     * Better handling of unicode input
-    * Actualize Travis build scripts
+    * Switch from Travis to GitHub Actions
     * Update README
 * `0.6.1`
     * Fix regression on python 3+ when trying to decode pdf output
