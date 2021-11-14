@@ -20,6 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          chmod +x ./ci/before-script.sh
           ./ci/before-script.sh
           python -m pip install --upgrade pip
           pip install nose
