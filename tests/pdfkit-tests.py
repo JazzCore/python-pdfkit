@@ -111,7 +111,7 @@ class TestPDFKitInitialization(unittest.TestCase):
         roptions = {
             '--page-size': 'Letter',
             'cookies': [
-                ('test_cookie1',''),
+                ('test_cookie1','""'),
                 ('test_cookie2','cookie_value2'),
             ]
         }
@@ -120,6 +120,7 @@ class TestPDFKitInitialization(unittest.TestCase):
 
         test_command = r.command('test')
 
+        idx1 = test_command.index('--page-size')  # Raise exception in case of not found
         self.assertTrue(test_command[idx1 + 1] == 'Letter')
 
     def test_custom_configuration(self):
