@@ -492,5 +492,15 @@ class TestPDFKitGeneration(unittest.TestCase):
         output = r.to_pdf()
         self.assertEqual(output[:4].decode('utf-8'), '%PDF')
 
+    def test_raise_exceptions_kwarg(self):
+        r = pdfkit.PDFKit('clearlywrongurl.asdf', 'url', raise_exceptions=True)
+        with self.assertRaises(IOError):
+            r.to_pdf()
+
+        r = pdfkit.PDFKit('clearlywrongurl.asdf', 'url', raise_exceptions=False)
+        with not self.assertRaises(IOError):
+            r.to_pdf()
+
+
 if __name__ == "__main__":
     unittest.main()
