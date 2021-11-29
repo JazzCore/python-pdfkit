@@ -505,5 +505,6 @@ class TestPDFKitGeneration(unittest.TestCase):
         except IOError:
             self.fail("r.to_pdf() raised an IOError exception despite 'raise_exceptions=False' kwarg")
 
+
 if __name__ == "__main__":
     unittest.main()
