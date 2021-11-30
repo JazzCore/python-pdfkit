@@ -1,5 +1,7 @@
 Changelog
 ---------
+* `1.0.1`
+    * By default PDFKit handle errors from wkhtmltopdf. Now if you need to get clear output from wkhtmltopdf output, if it existed, you should pass "raise_exceptions=False" to API calls
 * `1.0.0`
     * By default PDFKit now passes "quiet" option to wkhtmltopdf. Now if you need to get output you should pass "verbose=True" to API calls
     * Fix different issues with searching for wkhtmltopdf binary

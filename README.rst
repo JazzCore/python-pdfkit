@@ -146,6 +146,12 @@ You can also pass any options through meta tags in your HTML:
 
 	pdfkit.from_string(body, 'out.pdf') #with --page-size=Legal and --orientation=Landscape
 
+By default, PDFKit will  handle errors from ``wkhtmltopdf``, but in some cases ``wkhtmltopdf`` return pdf data in ``stdout`` despite errors. To tell PDFKit do not handle errors from ``wkhtmltopdf`` you should pass ``raise_exceptions=False`` to API calls, but you should consider that in case of empty ``stdout`` error handling will be started anyway:
+
+.. code-block:: python
+
+    pdfkit.from_url('google.com', 'out.pdf', raise_exceptions=False)
+
 Configuration
 -------------
 

@@ -199,8 +199,10 @@ class PDFKit(object):
         stderr = stderr or stdout or b""
         stderr = stderr.decode('utf-8', errors='replace')
         exit_code = result.returncode
-        # don't raise errors  if we want to get clean wkhtmltopdf output
-        if self.raise_exceptions:
+
+        # In some cases we don't want to handle errors if we want clean wkhtmltopdf output,
+        # but if we don't have stdout, we have to do it anyway
+        if not stdout or self.raise_exceptions:
             self.handle_error(exit_code, stderr)
 
         # Since wkhtmltopdf sends its output to stderr we will capture it
