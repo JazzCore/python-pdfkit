@@ -38,8 +38,8 @@ class PDFKit(object):
         def __str__(self):
             return self.msg
 
-    def __init__(self, url_or_file, type_, options=None, toc=None, cover=None,
-                 css=None, configuration=None, cover_first=False, verbose=False):
+    def __init__(self, url_or_file, type_, options=None, toc=None, cover=None, css=None, configuration=None,
+                 cover_first=False, verbose=False, raise_exceptions=True):
 
         self.source = Source(url_or_file, type_)
         self.configuration = (Configuration() if configuration is None
@@ -64,6 +64,7 @@ class PDFKit(object):
         self.verbose = verbose
         self.css = css
         self.stylesheets = []
+        self.raise_exceptions = raise_exceptions
 
     def _genargs(self, opts):
         """
@@ -198,7 +199,11 @@ class PDFKit(object):
         stderr = stderr or stdout or b""
         stderr = stderr.decode('utf-8', errors='replace')
         exit_code = result.returncode
-        self.handle_error(exit_code, stderr)
+
+        # In some cases we don't want to handle errors if we want clean wkhtmltopdf output,
+        # but if we don't have stdout, we have to do it anyway
+        if not stdout or self.raise_exceptions:
+            self.handle_error(exit_code, stderr)
 
         # Since wkhtmltopdf sends its output to stderr we will capture it
         # and properly send to stdout

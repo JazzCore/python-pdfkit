@@ -4,8 +4,8 @@ from .pdfkit import PDFKit
 from .pdfkit import Configuration
 
 
-def from_url(url, output_path=None, options=None, toc=None, cover=None,
-             configuration=None, cover_first=False, verbose=False):
+def from_url(url, output_path=None, options=None, toc=None, cover=None, configuration=None, cover_first=False,
+             verbose=False, raise_exceptions=True):
     """
     Convert file of files from URLs to PDF document
 
@@ -21,14 +21,14 @@ def from_url(url, output_path=None, options=None, toc=None, cover=None,
     Returns: True on success
     """
 
-    r = PDFKit(url, 'url', options=options, toc=toc, cover=cover,
-               configuration=configuration, cover_first=cover_first, verbose=verbose)
+    r = PDFKit(url, 'url', options=options, toc=toc, cover=cover, configuration=configuration, cover_first=cover_first,
+               verbose=verbose, raise_exceptions=raise_exceptions)
 
     return r.to_pdf(output_path)
 
 
 def from_file(input, output_path=None, options=None, toc=None, cover=None, css=None,
-              configuration=None, cover_first=False, verbose=False):
+              configuration=None, cover_first=False, verbose=False, raise_exceptions=True):
     """
     Convert HTML file or files to PDF document
 
@@ -45,14 +45,14 @@ def from_file(input, output_path=None, options=None, toc=None, cover=None, css=N
     Returns: True on success
     """
 
-    r = PDFKit(input, 'file', options=options, toc=toc, cover=cover, css=css,
-               configuration=configuration, cover_first=cover_first, verbose=verbose)
+    r = PDFKit(input, 'file', options=options, toc=toc, cover=cover, css=css, configuration=configuration,
+               cover_first=cover_first, verbose=verbose, raise_exceptions=raise_exceptions)
 
     return r.to_pdf(output_path)
 
 
 def from_string(input, output_path=None, options=None, toc=None, cover=None, css=None,
-                configuration=None, cover_first=False, verbose=False):
+                configuration=None, cover_first=False, verbose=False, raise_exceptions=True):
     """
     Convert given string or strings to PDF document
 
@@ -69,8 +69,8 @@ def from_string(input, output_path=None, options=None, toc=None, cover=None, css
     Returns: True on success
     """
 
-    r = PDFKit(input, 'string', options=options, toc=toc, cover=cover, css=css,
-               configuration=configuration, cover_first=cover_first, verbose=verbose)
+    r = PDFKit(input, 'string', options=options, toc=toc, cover=cover, css=css, configuration=configuration,
+               cover_first=cover_first, verbose=verbose, raise_exceptions=raise_exceptions)
 
     return r.to_pdf(output_path)
 

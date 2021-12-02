@@ -492,5 +492,27 @@ class TestPDFKitGeneration(unittest.TestCase):
         output = r.to_pdf()
         self.assertEqual(output[:4].decode('utf-8'), '%PDF')
 
+    def test_raise_exceptions_kwarg(self):
+
+        # exception raised with stdout and raise_exceptions=True
+        r = pdfkit.PDFKit('<html><body>Hai!</body></html>', 'string', options={'bad-option': None},
+                          raise_exceptions=True)
+        with self.assertRaises(IOError):
+            r.to_pdf()
+
+        # exception raised despite raise_exceptions=False because no stdout
+        r = pdfkit.PDFKit('clearlywrongurl.asdf', 'url', raise_exceptions=False)
+        with self.assertRaises(IOError):
+            r.to_pdf()
+
+        # exception not raised with stdout and raise_exceptions=False
+        r = pdfkit.PDFKit('<html><body>Hai!</body></html>', 'string', options={'bad-option': None},
+                          raise_exceptions=False)
+        try:
+            r.to_pdf()
+        except IOError:
+            self.fail("r.to_pdf() raised an IOError exception despite 'raise_exceptions=False' kwarg")
+
+
 if __name__ == "__main__":
     unittest.main()
