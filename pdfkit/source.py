@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
 import io
-try:
-    # Python 2.x and 3.x support for checking string types
-    assert basestring
-    assert unicode
-except NameError:
-    basestring = str
-    unicode = str
 
+# Python 2.x and 3.x support for checking string types
+basestring = str.__mro__[-2]
+unicode = type(u'')
 
 
 class Source(object):
