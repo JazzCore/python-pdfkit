@@ -12,6 +12,11 @@ Python 3 wrapper for wkhtmltopdf utility to convert HTML to PDF using Webkit.
 
 This is adapted version of `ruby PDFKit <https://github.com/pdfkit/pdfkit>`_ library, so big thanks to them!
 
+Deprecation Warning
+-------------------
+
+This library has been deprecated to match the `wkhtmltopdf project status <https://wkhtmltopdf.org/status.html>`_.
+
 Installation
 ------------
 
