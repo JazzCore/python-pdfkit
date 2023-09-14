@@ -8,10 +8,6 @@ from .configuration import Configuration
 import io
 import codecs
 
-# Python 2.x and 3.x support for checking string types
-basestring = str.__mro__[-2]
-unicode = type(u'')
-
 
 class PDFKit(object):
     """
@@ -113,7 +109,7 @@ class PDFKit(object):
         if self.source.isString() or self.source.isFileObj():
             yield '-'
         else:
-            if isinstance(self.source.source, basestring):
+            if isinstance(self.source.source, str):
                 yield self.source.to_s()
             else:
                 for s in self.source.source:
@@ -158,7 +154,7 @@ class PDFKit(object):
         args = self.command(path)
 
         if sys.platform == 'win32':
-            #hide cmd window
+            # hide cmd window
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             startupinfo.wShowWindow = subprocess.SW_HIDE
@@ -241,8 +237,8 @@ class PDFKit(object):
                 for optval in value:
                     yield (normalized_key, optval)
             else:
-                normalized_value = '' if isinstance(value,bool) else value
-                yield (normalized_key, unicode(normalized_value) if value else value)
+                normalized_value = '' if isinstance(value, bool) else value
+                yield (normalized_key, str(normalized_value) if value else value)
 
     def _normalize_arg(self, arg):
         return arg.lower()
