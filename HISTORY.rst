@@ -1,5 +1,7 @@
 Changelog
 ---------
+* `1.0.1`
+    * Add support for Python 3.10 and Python 3.11
 * `1.0.0`
     * By default PDFKit now passes "quiet" option to wkhtmltopdf. Now if you need to get output you should pass "verbose=True" to API calls
     * Fix different issues with searching for wkhtmltopdf binary
