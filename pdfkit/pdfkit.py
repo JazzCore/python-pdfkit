@@ -32,7 +32,7 @@ class PDFKit(object):
             return self.msg
 
     def __init__(self, url_or_file, type_, options=None, toc=None, cover=None,
-                 css=None, configuration=None, cover_first=False, verbose=False):
+                 css=None, configuration=None, cover_first=False, verbose=False, timeout=None):
 
         self.source = Source(url_or_file, type_)
         self.configuration = (Configuration() if configuration is None
@@ -57,6 +57,7 @@ class PDFKit(object):
         self.verbose = verbose
         self.css = css
         self.stylesheets = []
+        self.timeout = timeout
 
     def _genargs(self, opts):
         """
@@ -187,7 +188,7 @@ class PDFKit(object):
         else:
             input = None
 
-        stdout, stderr = result.communicate(input=input)
+        stdout, stderr = result.communicate(input=input, timeout=self.timeout)
         stderr = stderr or stdout or b""
         stderr = stderr.decode('utf-8', errors='replace')
         exit_code = result.returncode
