@@ -207,12 +207,12 @@ class PDFKit(object):
                 text = f.read(4)
                 if text == '':
                     raise IOError('Command failed: %s\n'
-                                  'Check whhtmltopdf output without \'quiet\' '
+                                  'Check wkhtmltopdf output without \'quiet\' '
                                   'option' % ' '.join(args))
                 return True
         except (IOError, OSError) as e:
             raise IOError('Command failed: %s\n'
-                          'Check whhtmltopdf output without \'quiet\' option\n'
+                          'Check wkhtmltopdf output without \'quiet\' option\n'
                           '%s ' % (' '.join(args), e))
 
     def _normalize_options(self, options):
