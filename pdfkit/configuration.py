@@ -25,6 +25,15 @@ class Configuration(object):
                     self.wkhtmltopdf = subprocess.Popen(
                         ['where.exe', 'wkhtmltopdf'], stdout=subprocess.PIPE, startupinfo=startupinfo).communicate()[0]
                 else:
+                    try:
+                        subprocess.Popen(
+                            ['which'], stdout=subprocess.PIPE).communicate()[0]
+                    except (IOError, FileNotFoundError) as e:
+                        raise IOError('No which executable found. '
+                                    'If this file exists please check that this process can '
+                                    'read it or you can pass path to it manually in method call, '
+                                    'check README. Otherwise please install which - '
+                                    'https://github.com/JazzCore/python-pdfkit/wiki/Installing-which')
                     self.wkhtmltopdf = subprocess.Popen(
                         ['which', 'wkhtmltopdf'], stdout=subprocess.PIPE).communicate()[0]
 
