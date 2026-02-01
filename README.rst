@@ -151,6 +151,35 @@ You can also pass any options through meta tags in your HTML:
 
 	pdfkit.from_string(body, 'out.pdf') #with --page-size=Legal and --orientation=Landscape
 
+Custom Fonts Not Appearing in PDF
+--------------------------------
+
+If custom fonts work in HTML but do not appear in the generated PDF, this is usually
+a limitation of wkhtmltopdf rather than python-pdfkit.
+
+Common requirements:
+
+- Use absolute paths for font files (relative paths may not resolve correctly)
+- Use supported font formats such as .ttf or .otf
+- Enable local file access when generating PDFs
+
+Example CSS::
+
+    @font-face {
+        font-family: MyFont;
+        src: url("file:///absolute/path/to/MyFont.ttf");
+    }
+
+Example Python::
+
+    options = {
+        "enable-local-file-access": ""
+    }
+
+    pdfkit.from_file("input.html", "output.pdf", options=options)
+
+It is recommended to use wkhtmltopdf version 0.12.6 with patched Qt for best results.
+
 Configuration
 -------------
 
