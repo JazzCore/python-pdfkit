@@ -9,3 +9,6 @@ pdfkit.egg-info
 # Tests
 .tox
 .python-version
+
+# OS
+.DS_Store

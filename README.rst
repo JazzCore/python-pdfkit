@@ -135,7 +135,7 @@ You can specify external CSS files when converting files or strings using *css* 
     css = ['example.css', 'example2.css']
     pdfkit.from_file('file.html', options=options, css=css)
 
-You can also pass any options through meta tags in your HTML:
+You can also pass options through meta tags in your HTML:
 
 .. code-block:: python
 
@@ -150,6 +150,19 @@ You can also pass any options through meta tags in your HTML:
 	    """
 
 	pdfkit.from_string(body, 'out.pdf') #with --page-size=Legal and --orientation=Landscape
+
+Security (CVE-2025-26240)
+-------------------------
+
+By default, ``pdfkit.from_string`` filters the meta tags against a safe allowlist of layout and formatting options (such as ``page-size``, ``orientation``, ``margin-top``, etc.) to prevent Local File Inclusion (LFI) and Server-Side Request Forgery (SSRF) vulnerabilities (CVE-2025-26240).
+
+If you are rendering untrusted HTML, the default safe parsing behavior protects your system from malicious parameters like ``--enable-local-file-access``, ``--post-file``, or ``--script``.
+
+If you are working with trusted HTML and explicitly need to allow potentially unsafe wkhtmltopdf command-line options via HTML meta tags, you can enable them by setting ``allow_unsafe_meta_tags=True``:
+
+.. code-block:: python
+
+    pdfkit.from_string(body, 'out.pdf', allow_unsafe_meta_tags=True)
 
 Configuration
 -------------
