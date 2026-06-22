@@ -1,5 +1,13 @@
 Changelog
 ---------
+
+* `2.0.1`
+    * Fix security vulnerability CVE-2025-26240: Implement secure meta option
+      allowlist filtering for ``from_string`` to prevent Local File Inclusion
+      (LFI) and Server-Side Request Forgery (SSRF). Add
+      ``allow_unsafe_meta_tags`` option to override filtering when rendering
+      trusted content.
+
 * `2.0.0`
     * Drop support for Python <= 3.7
 * `1.0.0`
