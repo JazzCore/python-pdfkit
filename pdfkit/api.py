@@ -52,7 +52,7 @@ def from_file(input, output_path=None, options=None, toc=None, cover=None, css=N
 
 
 def from_string(input, output_path=None, options=None, toc=None, cover=None, css=None,
-                configuration=None, cover_first=False, verbose=False):
+                configuration=None, cover_first=False, verbose=False, allow_unsafe_meta_tags=False):
     """
     Convert given string or strings to PDF document
 
@@ -65,12 +65,14 @@ def from_string(input, output_path=None, options=None, toc=None, cover=None, css
     :param configuration: (optional) instance of pdfkit.configuration.Configuration()
     :param cover_first: (optional) if True, cover always precedes TOC
     :param verbose: (optional) By default '--quiet' is passed to all calls, set this to False to get wkhtmltopdf output to stdout.
+    :param allow_unsafe_meta_tags: (optional) if True, allow unsafe options from HTML meta tags (not recommended, CVE-2025-26240).
 
     Returns: True on success
     """
 
     r = PDFKit(input, 'string', options=options, toc=toc, cover=cover, css=css,
-               configuration=configuration, cover_first=cover_first, verbose=verbose)
+               configuration=configuration, cover_first=cover_first, verbose=verbose,
+               allow_unsafe_meta_tags=allow_unsafe_meta_tags)
 
     return r.to_pdf(output_path)
 
