@@ -2,9 +2,11 @@
 import re
 import subprocess
 import sys
+import warnings
 from collections import OrderedDict
 from .source import Source
 from .configuration import Configuration
+from .security import is_safe_meta_option
 import io
 import codecs
 
@@ -32,7 +34,8 @@ class PDFKit(object):
             return self.msg
 
     def __init__(self, url_or_file, type_, options=None, toc=None, cover=None,
-                 css=None, configuration=None, cover_first=False, verbose=False):
+                 css=None, configuration=None, cover_first=False, verbose=False,
+                 allow_unsafe_meta_tags=False):
 
         self.source = Source(url_or_file, type_)
         self.configuration = (Configuration() if configuration is None
@@ -41,6 +44,8 @@ class PDFKit(object):
             self.wkhtmltopdf = self.configuration.wkhtmltopdf.decode('utf-8')
         except AttributeError:
             self.wkhtmltopdf = self.configuration.wkhtmltopdf
+
+        self.allow_unsafe_meta_tags = allow_unsafe_meta_tags
 
         self.options = OrderedDict()
         if self.source.isString():
@@ -292,6 +297,15 @@ class PDFKit(object):
             if re.search('name=["\']%s' % self.configuration.meta_tag_prefix, x):
                 name = re.findall('name=["\']%s([^"\']*)' %
                                   self.configuration.meta_tag_prefix, x)[0]
-                found[name] = re.findall('content=["\']([^"\']*)', x)[0]
+                value = re.findall('content=["\']([^"\']*)', x)[0]
+                if self.allow_unsafe_meta_tags or is_safe_meta_option(name):
+                    found[name] = value
+                else:
+                    warnings.warn(
+                        'Blocked unsafe meta tag option: {}. '
+                        'To allow this, set allow_unsafe_meta_tags=True, but '
+                        'be aware of the security risks (CVE-2025-26240).'.format(name),
+                        RuntimeWarning
+                    )
 
         return found
