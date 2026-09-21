@@ -183,7 +183,9 @@ class PDFKit(object):
         if self.source.isString() or (self.source.isFile() and self.css):
             input = self.source.to_s().encode('utf-8')
         elif self.source.isFileObj():
-            input = self.source.source.read().encode('utf-8')
+            input = self.source.source.read()
+            if isinstance(input, str):
+                input = input.encode('utf-8')
         else:
             input = None
 
