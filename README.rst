@@ -71,6 +71,11 @@ Also you can pass an opened file:
     with open('file.html') as f:
         pdfkit.from_file(f, 'out.pdf')
 
+Text streams are encoded as UTF-8. Binary streams (including ``io.BytesIO``
+and files opened with ``'rb'``) are passed through without changing their bytes.
+The caller retains ownership of the input stream.
+
+
 If you wish to further process generated PDF, you can read it to a variable:
 
 .. code-block:: python
