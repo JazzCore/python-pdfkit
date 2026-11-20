@@ -7,12 +7,22 @@ basestring = str.__mro__[-2]
 unicode = type(u'')
 
 
+def _normalize_path(path):
+    if hasattr(path, '__fspath__'):
+        return os.fsdecode(path)
+    return path
+
+
 class Source(object):
     def __init__(self, url_or_file, type_):
         self.source = url_or_file
         self.type = type_
 
         if self.type == 'file':
+            if isinstance(self.source, list):
+                self.source = [_normalize_path(path) for path in self.source]
+            else:
+                self.source = _normalize_path(self.source)
             self.checkFiles()
 
     def isUrl(self):

@@ -4,6 +4,8 @@ import io
 import sys
 import codecs
 import unittest
+from pathlib import Path
+from unittest.mock import Mock, patch
 
 
 if sys.version_info[0] == 2 and sys.version_info[1] == 7:
@@ -15,6 +17,82 @@ TESTS_ROOT = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.realpath(os.path.join(TESTS_ROOT, '..')))
 
 import pdfkit
+
+
+class TestPathLikeFiles(unittest.TestCase):
+    """Path handling without requiring a wkhtmltopdf installation."""
+
+    def setUp(self):
+        self.html = Path(TESTS_ROOT) / 'fixtures' / 'example.html'
+        self.css = Path(TESTS_ROOT) / 'fixtures' / 'example.css'
+        self.configuration = pdfkit.configuration(wkhtmltopdf=sys.executable)
+
+    def test_single_input_path(self):
+        kit = pdfkit.PDFKit(self.html, 'file', configuration=self.configuration)
+        self.assertEqual(kit.command()[-2:], [str(self.html), '-'])
+
+    def test_mixed_input_paths(self):
+        paths = [self.html, str(self.html)]
+        kit = pdfkit.PDFKit(paths, 'file', configuration=self.configuration)
+        self.assertEqual(kit.command()[-3:], [str(self.html), str(self.html), '-'])
+        self.assertIsInstance(paths[0], Path)
+
+    def test_custom_path_protocol(self):
+        class FilePath(object):
+            def __fspath__(self):
+                return os.fsencode(str(self.html))
+
+        path = FilePath()
+        path.html = self.html
+        kit = pdfkit.PDFKit(path, 'file', configuration=self.configuration)
+        self.assertEqual(kit.command()[-2:], [str(self.html), '-'])
+
+    def test_missing_input_path(self):
+        with self.assertRaises(IOError):
+            pdfkit.PDFKit(self.html / 'missing', 'file',
+                          configuration=self.configuration)
+
+    def test_path_with_css(self):
+        kit = pdfkit.PDFKit(self.html, 'file', css=self.css,
+                           configuration=self.configuration)
+        self.assertEqual(kit.command()[-2:], ['-', '-'])
+        self.assertIn('<style>', kit.source.to_s())
+        self.assertIn(self.css.read_text().strip(), kit.source.to_s())
+
+    def test_output_and_cover_paths(self):
+        output = self.html.with_suffix('.pdf')
+        kit = pdfkit.PDFKit('https://example.com', 'url', cover=self.html,
+                           configuration=self.configuration)
+        self.assertEqual(kit.command(output)[-4:],
+                         ['cover', str(self.html), 'https://example.com', str(output)])
+
+    def test_executable_path(self):
+        config = pdfkit.configuration(wkhtmltopdf=Path(sys.executable))
+        kit = pdfkit.PDFKit('html', 'string', configuration=config)
+        self.assertEqual(kit.command()[0], sys.executable)
+
+    def test_file_objects_still_use_stdin(self):
+        with self.html.open() as source:
+            kit = pdfkit.PDFKit(source, 'file', configuration=self.configuration)
+            self.assertIs(kit.source.source, source)
+            self.assertEqual(kit.command()[-2:], ['-', '-'])
+
+    def test_from_file_passes_string_arguments(self):
+        process = Mock(returncode=0)
+        process.communicate.return_value = (b'%PDF-test', b'')
+        with patch('pdfkit.pdfkit.subprocess.Popen', return_value=process) as popen:
+            result = pdfkit.from_file(self.html, configuration=self.configuration)
+        self.assertEqual(result, b'%PDF-test')
+        self.assertEqual(popen.call_args[0][0][-2:], [str(self.html), '-'])
+        process.communicate.assert_called_once_with(input=None)
+
+    def test_output_failure_keeps_io_error(self):
+        output = self.html / 'missing.pdf'
+        process = Mock(returncode=0)
+        process.communicate.return_value = (b'', b'')
+        with patch('pdfkit.pdfkit.subprocess.Popen', return_value=process):
+            with self.assertRaisesRegex(IOError, 'Command failed:'):
+                pdfkit.from_file(self.html, output, configuration=self.configuration)
 
 
 class TestPDFKitInitialization(unittest.TestCase):
