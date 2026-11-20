@@ -3,7 +3,7 @@ import re
 import subprocess
 import sys
 from collections import OrderedDict
-from .source import Source
+from .source import Source, _normalize_path
 from .configuration import Configuration
 import io
 import codecs
@@ -123,7 +123,7 @@ class PDFKit(object):
             yield '-'
 
     def command(self, path=None):
-        return list(self._command(path))
+        return [_normalize_path(arg) for arg in self._command(path)]
 
     @staticmethod
     def handle_error(exit_code, stderr):

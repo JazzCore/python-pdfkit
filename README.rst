@@ -64,6 +64,15 @@ You can pass a list with multiple URLs or files:
 	pdfkit.from_url(['google.com', 'yandex.ru', 'engadget.com'], 'out.pdf')
 	pdfkit.from_file(['file1.html', 'file2.html'], 'out.pdf')
 
+File paths can also be ``pathlib.Path`` objects, including entries in an input
+list and the output, cover, CSS, and configured ``wkhtmltopdf`` paths:
+
+.. code-block:: python
+
+    from pathlib import Path
+
+    pdfkit.from_file(Path('test.html'), Path('out.pdf'))
+
 Also you can pass an opened file:
 
 .. code-block:: python

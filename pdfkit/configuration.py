@@ -2,6 +2,7 @@
 import os
 import subprocess
 import sys
+from .source import _normalize_path
 try:
     FileNotFoundError
 except NameError:
@@ -12,7 +13,7 @@ class Configuration(object):
     def __init__(self, wkhtmltopdf='', meta_tag_prefix='pdfkit-', environ=''):
         self.meta_tag_prefix = meta_tag_prefix
 
-        self.wkhtmltopdf = wkhtmltopdf
+        self.wkhtmltopdf = _normalize_path(wkhtmltopdf)
 
         try:
             if not self.wkhtmltopdf:
