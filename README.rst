@@ -135,7 +135,8 @@ You can specify external CSS files when converting files or strings using *css* 
     css = ['example.css', 'example2.css']
     pdfkit.from_file('file.html', options=options, css=css)
 
-You can also pass any options through meta tags in your HTML:
+When using ``from_string``, you can also pass options through meta tags in
+the HTML string:
 
 .. code-block:: python
 
@@ -150,6 +151,20 @@ You can also pass any options through meta tags in your HTML:
 	    """
 
 	pdfkit.from_string(body, 'out.pdf') #with --page-size=Legal and --orientation=Landscape
+
+``from_file`` and ``from_url`` do not extract these meta tag options. Pass
+``options`` explicitly when using those functions. To use meta tag options
+from a local HTML file, read its contents and pass the string to
+``from_string``:
+
+.. code-block:: python
+
+    with open('file.html', encoding='utf-8') as source:
+        pdfkit.from_string(source.read(), 'out.pdf')
+
+Use the file's actual encoding when reading it. With string input, relative
+resource URLs no longer have the input file's directory as their base; use
+absolute URLs or an HTML ``<base href="...">`` element when needed.
 
 Configuration
 -------------
