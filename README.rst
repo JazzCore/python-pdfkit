@@ -17,6 +17,28 @@ Deprecation Warning
 
 This library has been deprecated to match the `wkhtmltopdf project status <https://wkhtmltopdf.org/status.html>`_.
 
+Security
+--------
+
+**Warning!** Never pass untrusted HTML, such as HTML from users, to ``from_string()``. It reads ``<meta name="pdfkit-...">`` tags in the HTML as ``wkhtmltopdf`` options, so whoever writes the HTML can set any option, including ones that read files or run JavaScript (`CVE-2025-26240 <https://www.cve.org/CVERecord?id=CVE-2025-26240>`_).
+
+To convert untrusted HTML:
+
+* Use ``from_file()``, which ignores meta tags, and turn off JavaScript and local file access, as below.
+* Never add ``--enable-local-file-access`` or ``--allow``, and never put user input in ``options``, ``toc``, ``cover`` or ``css``.
+* Run ``wkhtmltopdf`` where it cannot reach your secrets or internal network. The HTML can still load images and pages from any address.
+
+.. code-block:: python
+
+	import io
+
+	options = {
+	    'disable-javascript': None,
+	    'disable-local-file-access': None
+	}
+
+	pdfkit.from_file(io.StringIO(untrusted_html), 'out.pdf', options=options)
+
 Installation
 ------------
 

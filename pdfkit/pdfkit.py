@@ -15,7 +15,8 @@ class PDFKit(object):
 
     :param url_or_file: str - either a URL, a path to a file or a string containing HTML
                        to convert
-    :param type_: str - either 'url', 'file' or 'string'
+    :param type_: str - either 'url', 'file' or 'string'. Never use 'string' with untrusted
+                  HTML (see from_string)
     :param options: dict (optional) with wkhtmltopdf options, with or w/o '--'
     :param toc: dict (optional) - toc-specific wkhtmltopdf options, with or w/o '--'
     :param cover: str (optional) - url/filename with a cover html page

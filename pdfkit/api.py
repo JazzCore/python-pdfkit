@@ -9,6 +9,9 @@ def from_url(url, output_path=None, options=None, toc=None, cover=None,
     """
     Convert file of files from URLs to PDF document
 
+    Warning: never pass untrusted URLs. wkhtmltopdf also opens file:// URLs and addresses
+    on your internal network. See Security in the README.
+
     :param url: URL or list of URLs to be saved
     :param output_path: (optional) path to output PDF file. By default, PDF will be returned for assigning to a variable.
     :param options: (optional) dict with wkhtmltopdf global and page options, with or w/o '--'
@@ -31,6 +34,8 @@ def from_file(input, output_path=None, options=None, toc=None, cover=None, css=N
               configuration=None, cover_first=False, verbose=False):
     """
     Convert HTML file or files to PDF document
+
+    Unlike from_string(), this ignores <meta name="pdfkit-..."> tags. See Security in the README.
 
     :param input: path to HTML file or list with paths or file-like object
     :param output_path: (optional) path to output PDF file. By default, PDF will be returned for assigning to a variable.
@@ -55,6 +60,9 @@ def from_string(input, output_path=None, options=None, toc=None, cover=None, css
                 configuration=None, cover_first=False, verbose=False):
     """
     Convert given string or strings to PDF document
+
+    Warning: never pass untrusted HTML. Its <meta name="pdfkit-..."> tags become wkhtmltopdf
+    options. Use from_file() instead. See Security in the README.
 
     :param input: string with a desired text. Could be a raw text or a html file
     :param output_path: (optional) path to output PDF file. By default, PDF will be returned for assigning to a variable.
