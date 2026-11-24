@@ -17,6 +17,37 @@ Deprecation Warning
 
 This library has been deprecated to match the `wkhtmltopdf project status <https://wkhtmltopdf.org/status.html>`_.
 
+A maintained binary
+~~~~~~~~~~~~~~~~~~~
+
+This library needs the ``wkhtmltopdf`` program, which is archived: its last
+Linux build is for Ubuntu 22.04, and it does not install on Ubuntu 26.04,
+Debian 13 or Alpine. On GitHub's ``ubuntu-latest`` runner, ``apt-get install wkhtmltopdf``
+fails with ``E: Package 'wkhtmltopdf' has no installation candidate``.
+
+``marqius-wkhtmltopdf`` is a maintained drop-in replacement — the same command
+and options — built from scratch on the foundation of that command line, not
+a fork of the archived code: one statically linked file, no Qt, no X server.
+Installed with pip; the wheel carries the program for your platform, Windows
+included:
+
+.. code-block:: bash
+
+    pip install marqius-wkhtmltopdf
+
+pdfkit takes its path in one line:
+
+.. code-block:: python
+
+    import pdfkit, marqius_wkhtmltopdf
+    config = pdfkit.configuration(wkhtmltopdf=marqius_wkhtmltopdf.path())
+
+In slim images, install one font package first:
+``apt-get install -y --no-install-recommends fonts-dejavu-core``.
+
+The Community licence is free for personal and open-source projects;
+businesses need a commercial licence.
+
 Installation
 ------------
 
